@@ -1,27 +1,25 @@
-import { useState } from 'react';
 import './App.css';
-import Input from './componenet/Input';
-import img from './images/img.png'
-import UploadFile from './componenet/UploadFile';
-
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import FerstPage from './pages/FerstPage';
+import Secend from './pages/Secend';
+import Semantic from './pages/Semantic';
+import Spelling from './pages/Spelling';
 function App() {
   return (
-    <div className='flex overflow-hidden lg:flex-nowrap flex-wrap'>
-      <Input />
-      <div>
-        <div>
-          <img className='md:w-1/2 w-0 mx-auto ' src={img} alt='img-banner' />
-        </div>
-        <div className='scrollbar-thumb-rounded-full scrollbar-track-rounded-full scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-200 h-1/3 overflow-y-scroll'>
-        <UploadFile />
-        <UploadFile />
-        <UploadFile />
-        <UploadFile />
-        <UploadFile />
-        </div>
-      </div>
-    </div>
-  );
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<FerstPage />} />
+        <Route path="extract" element={<Secend />} />
+        <Route path="semantic" element={<Semantic />} />
+        <Route path="spelling" element={<Spelling />} />
+
+        <Route path="*" element={< FerstPage />} />
+
+      </Routes>
+    </BrowserRouter>
+  )
+
+
 }
 
 export default App;
