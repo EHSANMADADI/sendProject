@@ -9,6 +9,7 @@ import { LiaBackwardSolid } from "react-icons/lia";
 export default function Secend() {
   const [response, setResponse] = useState(null);
   const [error, setError] = useState(null);
+  const [selectedItem, setSelectedItem] = useState(null);
   const txt = localStorage.getItem('txt');
   const navigate = useNavigate();
 
@@ -34,8 +35,7 @@ export default function Secend() {
         const data = await res.json();
         setResponse(data);
         console.log(data);
-      }
-       catch (error) {
+      } catch (error) {
         console.error('Error fetching data:', error);
         setError('Error fetching data.');
       }
@@ -43,28 +43,30 @@ export default function Secend() {
 
     fetchData();
   }, [txt]);
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  // useEffect(() => {
-  //   if (error) {
-  //     Swal.fire({
-  //       title: "عملیات با خطا مواجه شد لطفا دوباره تلاش گنید",
-  //       icon: "error"
-  //     }).then(() => {
-  //       navigate('/');
-  //     });
-  //   }
-  // }, [error, navigate]);
+  const handleSelectItem = (item) => {
+    setSelectedItem(item);
+  };
 
+  const getHighlightedText = (text, highlight) => {
+    if (!highlight) return text;
+    const parts = text.split(new RegExp(`(${highlight})`, 'gi'));
+    return parts.map((part, index) =>
+      part.toLowerCase() === highlight.toLowerCase()
+        ? `<span key=${index} class="bg-blue-500 text-white p-10 rounded-lg">${part}</span>`
+        : part
+    ).join('');
+  };
+    
   return (
     <div className='h-screen'>
       {response ? (
         <div className='p-2 flex items-center flex-wrap flex-col text-xl'>
-          <div dangerouslySetInnerHTML={{ __html: response.predictions[0] }}></div>
+          <div dangerouslySetInnerHTML={{ __html: getHighlightedText(response.predictions[0], selectedItem) }}></div>
           <div className='w-full'>
-            <EntitiesTable entities={response.entities} />
+            <EntitiesTable entities={response.entities} onSelectItem={handleSelectItem} />
           </div>
-          <div onClick={()=>localStorage.removeItem('txt')} className='flex items-center px-5 py-3 bg-yellow-600 text-white font-semibold rounded-xl mt-10 hover:scale-75 hover:bg-yellow-400 duration-300'>
+          <div className='flex items-center px-5 py-3 bg-yellow-600 text-white font-semibold rounded-xl mt-10 hover:scale-75 hover:bg-yellow-400 duration-300'>
             <span className='p-1 m-1 text-2xl'><LiaBackwardSolid /></span>
             <Link to='/'>بازگشت به صفحه اصلی </Link>
           </div>

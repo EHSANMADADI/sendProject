@@ -9,7 +9,7 @@ import { IoMdEye } from "react-icons/io";
 import axios from 'axios';
 import Modal from './Modal';
 import loader from '../images/loader.gif'
-export default function UploadFile({ file, setFile }) {
+export default function UploadFile({ file, setFile,setSaveItem,saveItem }) {
     const [progress, setProgress] = useState(0);
     const [send, setSend] = useState(false)
     const [text, setText] = useState('');
@@ -17,7 +17,7 @@ export default function UploadFile({ file, setFile }) {
     const [reseveDta, setReseveDta] = useState(false);
     const [openModals, setOpenModals] = useState([]);
     const [selectedImage, setSelectedImage] = useState(null);
-    const [saveItem, setSaveItem] = useState([]);
+    // const [saveItem, setSaveItem] = useState([]);
     const formData = new FormData();
     if (file) {
         const reader = new FileReader();
@@ -54,11 +54,11 @@ export default function UploadFile({ file, setFile }) {
                 setReseveDta(true)
                 setSend(true);
                 setText(res.data.text);
-                localStorage.setItem('txt',res.data.text)
+               // localStorage.setItem('txt',res.data.text)///////////////////////////////////////////////////////////////////////////
                 setOpen(true);
                 const newItem = { name: file.name, img: src, txt: res.data.text };
                 const storedArray = JSON.parse(sessionStorage.getItem('SeavedItem')) || [];
-                const updatedArray = [...storedArray, newItem]
+                const updatedArray = [newItem,...storedArray]
                 setSaveItem(updatedArray);
                 sessionStorage.setItem('SeavedItem', JSON.stringify(updatedArray));
                 setOpenModals(new Array(updatedArray.length).fill(false));
@@ -82,7 +82,8 @@ export default function UploadFile({ file, setFile }) {
         });
 
     }
-    const handleModalOpen = (index) => {
+    const handleModalOpen = (index,txt) => {
+        localStorage.setItem('txt',txt)
         const updatedOpenModals = [...openModals];
         updatedOpenModals[index] = true;
         setOpenModals(updatedOpenModals);
@@ -101,7 +102,8 @@ export default function UploadFile({ file, setFile }) {
                     <p className='text-center'> فایلی موجود نیست لطفا فایلی را انتخاب نمایید</p>
                 </div>
             }
-            {
+
+            {/* {
                 saveItem.length > 0 && saveItem.map((item, index) => (
                     <div key={index} className='seavItem border border-gray-100 shadow-2xl rounded-lg  xl:mx-6 mx-1 xl:p-5 py-2 mb-10'>
                         <div className='flex justify-between items-center md:mx-5 mx-2'>
@@ -119,13 +121,10 @@ export default function UploadFile({ file, setFile }) {
                             </div>
                             <div className='flex justify-between'>
                                 <div className='flex'>
-                                    <button className='border-dotted border-black rounded-md border-2 sm:px-4 px-2 pt-1 pb-2 mx-2 sm:text-xl text-xs  font-semibold text-center flex items-center hover:scale-105 duration-200' onClick={() => handleModalOpen(index)}><span className='text-center mt-2 mr-2 text-2xl '><IoMdEye /></span>نمایش </button>
+                                    <button className='border-dotted border-black rounded-md border-2 sm:px-4 px-2 pt-1 pb-2 mx-2 sm:text-xl text-xs  font-semibold text-center flex items-center hover:scale-105 duration-200' onClick={() => handleModalOpen(index,item.txt)}><span className='text-center mt-2 mr-2 text-2xl '><IoMdEye /></span>نمایش </button>
                                     <button className='border-dotted border-black rounded-md border-2 sm:px-4 px-2 pt-1 pb-2 mx-2 sm:text-xl text-xs  font-semibold text-center flex items-center  hover:scale-105 duration-200' onClick={() => handelremove(index)}><span className='text-center mt-2 mr-2 text-2xl text-red-600 ' onClick={() => { handelremove() }}><RiDeleteBin6Line /></span>حذف </button>
                                 </div>
-                                <div className='flex'>
-                                    <button className='bg-orange-300 rounded-xl font-semibold sm:text-xl text-xs shadow-2xl border-[3px] border-orange-100 sm:px-5 px-2 hover:scale-105 duration-200'>pdf دانلود</button>
-                                    <button className='bg-orange-300 rounded-xl font-semibold sm:px-5 px-2 sm:text-xl text-xs shadow-2xl border-[3px] border-orange-100  hover:scale-105 duration-200'>wordدانلود </button>
-                                </div>
+                               
                             </div>
                         </div>
                         <Modal Open={openModals[index]} onClose={() => handleModalClose(index)}>
@@ -141,7 +140,12 @@ export default function UploadFile({ file, setFile }) {
                         </Modal>
                     </div>
                 ))
-            }
+            } */}
+
+
+
+
+
             {
                 file && !reseveDta &&
                 <div className='w-full'>
@@ -171,10 +175,10 @@ export default function UploadFile({ file, setFile }) {
                                     <button className='border-dotted border-black rounded-md border-2 sm:px-4 px-2 pt-1 pb-2 mx-2 sm:text-xl text-xs  font-semibold text-center flex items-center hover:scale-105 duration-200' onClick={() => alert('لطفا صبر کنید تا پردازش تکمیل شود')}><span className='text-center mt-2 mr-2 text-2xl '><IoMdEye /></span>نمایش </button>
                                     <button className='border-dotted border-black rounded-md border-2 sm:px-4 px-2 pt-1 pb-2 mx-2 sm:text-xl text-xs  font-semibold text-center flex items-center  hover:scale-105 duration-200' onClick={() => handelremove()}><span className='text-center mt-2 mr-2 text-2xl text-red-600 ' onClick={handelremove}><RiDeleteBin6Line /></span>حذف </button>
                                 </div>
-                                <div className='flex'>
+                                {/* <div className='flex'>
                                     <button className='bg-orange-300 rounded-xl font-semibold sm:text-xl text-xs  shadow-2xl border-[3px] border-orange-100 sm:px-5 px-2  hover:scale-105 duration-200'>pdf دانلود</button>
                                     <button className='bg-orange-300 rounded-xl font-semibold sm:px-5 px-3  sm:text-xl text-xs  shadow-2xl border-[3px] border-orange-100  hover:scale-105 duration-200'>wordدانلود </button>
-                                </div>
+                                </div> */}
                             </div>
                         </div>
                     </div>

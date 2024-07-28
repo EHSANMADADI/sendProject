@@ -2,7 +2,7 @@ import React from 'react'
 import { IoIosCloseCircle } from "react-icons/io";
 import { Link, Navigate } from "react-router-dom";
 export default function Modal({ Open, onClose, children,txt }) {
-console.log(txt);
+
   if (!Open) return null;
 
 

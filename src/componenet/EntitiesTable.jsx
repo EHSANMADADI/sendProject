@@ -1,6 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-const EntitiesTable = ({ entities }) => {
+const EntitiesTable = ({ entities, onSelectItem }) => {
+    const [selectedItem, setSelectedItem] = useState(null);
+
+    const handleClick = (item) => {
+        setSelectedItem(item);
+        onSelectItem(item); // صدا زدن تابعی که از والد آمده
+    };
+
     const renderTable = (title, items) => {
         if (items.length) {
             return (
@@ -9,11 +16,15 @@ const EntitiesTable = ({ entities }) => {
                         <h3 className='font-semibold text-xl p-2 my-3 h-full'>{title}</h3>
                         <div className='p-5 border-2 border-yellow-600 rounded-md h-60 overflow-auto'>
                             {
-
                                 items.map((item, index) => (
-                                    <span key={index}>{item} - </span>
+                                    <span 
+                                        key={index} 
+                                        onClick={() => handleClick(item)}
+                                        className={selectedItem === item ? 'selected-item' : ''}
+                                    >
+                                        {item} - 
+                                    </span>
                                 ))
-
                             }
                         </div>
                     </div>
@@ -21,9 +32,8 @@ const EntitiesTable = ({ entities }) => {
             );
         }
         else {
-            return null
+            return null;
         }
-
     };
 
     return (

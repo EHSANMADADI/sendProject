@@ -46,19 +46,29 @@ export default function Semantic() {
 
     fetchData();
   }, [txt]);
+  const parseText = (text) => {
+    const regex = /\(([^)]+)\)/g;
+    return text.split(regex).map((part, index) => {
+      if (index % 2 === 1) {
+        return <span key={index} className="bg-blue-600 text-white px-2 py-1 mx-1 rounded-2xl inline-block">{part}</span>;
+      }
+      return part;
+    });
+  }
   
   return (
-    <div className='bg-gray-100 h-screen'>
+    <div className='h-screen'>
       {response ? (
         <div className='p-2 flex items-center flex-wrap flex-col text-xl'>
           
-          <div className='flex' dir='rtl'> 
+          <div className='leading-10' dir='rtl'> 
           {
-            response.corrected_text
+            parseText( response.corrected_text)
+            
           }
           </div>
          
-          <div onClick={()=>localStorage.removeItem('txt')} className='flex items-center px-5 py-3 bg-yellow-600 text-white font-semibold rounded-xl mt-10 hover:scale-75 hover:bg-yellow-400 duration-300'>
+          <div className='flex items-center px-5 py-3 bg-yellow-600 text-white font-semibold rounded-xl mt-10 hover:scale-75 hover:bg-yellow-400 duration-300'>
             <span className='p-1 m-1 text-2xl'><LiaBackwardSolid /></span>
             <Link to='/'>بازگشت به صفحه اصلی </Link>
           </div>

@@ -1,7 +1,80 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react';
+import Swal from 'sweetalert2';
+import loader from '../images/loader.gif';
+import { Link } from "react-router-dom";
+import { LiaBackwardSolid } from "react-icons/lia";
 
 export default function Spelling() {
+  const txt = localStorage.getItem('txt');
+  const [response, setResponse] = useState(null);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (!txt) {
+      setError('No text provided in the query parameters.');
+      Swal.fire({
+        title: "No text provided in the query parameters.",
+        icon: "error"
+      });
+      return;
+    }
+
+    const fetchData = async () => {
+      try {
+        const res = await fetch('http://127.0.0.1:5001/spell_correction', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ text: txt })
+        });
+        if (!res.ok) {
+          Swal.fire({
+            title: `${res.statusText}`,
+            icon: "error"
+          });
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+
+        const data = await res.json();
+        setResponse(data);
+        console.log(res);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        setError('Error fetching data.');
+      }
+    };
+
+    fetchData();
+  }, [txt]);
+
+  const parseText = (text) => {
+    const regex = /\(([^)]+)\)/g;
+    return text.split(regex).map((part, index) => {
+      if (index % 2 === 1) {
+        return <span key={index} className="bg-green-700 text-white px-2 py-1 mx-1 rounded-2xl inline-block">{part}</span>;
+      }
+      return part;
+    });
+  };
+
   return (
-    <div>Spelling</div>
-  )
+    <div className='h-screen'>
+      {response ? (
+        <div className='p-2 flex items-center flex-wrap flex-col text-xl'>
+          <div className=' px-3 leading-10' dir='rtl'>
+            {parseText(response.corrected_text)}
+          </div>
+          <div className='flex items-center px-5 py-3 bg-yellow-600 text-white font-semibold rounded-xl mt-10 hover:scale-75 hover:bg-yellow-400 duration-300'>
+            <span className='p-1 m-1 text-2xl'><LiaBackwardSolid /></span>
+            <Link to='/'>بازگشت به صفحه اصلی </Link>
+          </div>
+        </div>
+      ) : (
+        <div className='flex w-full justify-center h-screen items-center'>
+          <img src={loader} alt='Loading...' />
+        </div>
+      )}
+    </div>
+  );
 }
