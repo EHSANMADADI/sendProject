@@ -9,7 +9,7 @@ import { IoMdEye } from "react-icons/io";
 import axios from 'axios';
 import Modal from './Modal';
 import loader from '../images/loader.gif'
-export default function UploadFile({ file, setFile,setSaveItem,saveItem }) {
+export default function UploadFile({ file, setFile, setSaveItem, saveItem }) {
     const [progress, setProgress] = useState(0);
     const [send, setSend] = useState(false)
     const [text, setText] = useState('');
@@ -38,32 +38,31 @@ export default function UploadFile({ file, setFile,setSaveItem,saveItem }) {
             reader.readAsDataURL(file);
             setProgress(0)
             setSend(false);
-            formData.append('image', file);
+            // formData.append('document', file);
+            formData.append('image', file)
 
-            axios.post('https://195.191.45.56:8734/ocr', formData, {
-                onUploadProgress: (progressEvent) => {
-                    const percentage = Math.floor((progressEvent.loaded * 100) / progressEvent.total);
-                    setProgress(percentage);
-                },
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                },
+            // axios.post('http://195.191.45.56:80/api/read_document/', formData,
+            axios.post('https://195.191.45.56:8734/ocr', formData,
+                {
+                    onUploadProgress: (progressEvent) => {
+                        const percentage = Math.floor((progressEvent.loaded * 100) / progressEvent.total);
+                        setProgress(percentage);
+                    },
+                }).then((res) => {
+                    console.log(res);
+                    setReseveDta(true)
+                    setSend(true);
+                    setText(res.data.text);
+                    // localStorage.setItem('txt',res.data.text)///////////////////////////////////////////////////////////////////////////
+                    setOpen(true);
+                    const newItem = { name: file.name, img: src, txt: res.data.text };
+                    const storedArray = JSON.parse(sessionStorage.getItem('SeavedItem')) || [];
+                    const updatedArray = [newItem, ...storedArray]
+                    setSaveItem(updatedArray);
+                    sessionStorage.setItem('SeavedItem', JSON.stringify(updatedArray));
+                    setOpenModals(new Array(updatedArray.length).fill(false));
 
-            }).then((res) => {
-                console.log(res);
-                setReseveDta(true)
-                setSend(true);
-                setText(res.data.text);
-               // localStorage.setItem('txt',res.data.text)///////////////////////////////////////////////////////////////////////////
-                setOpen(true);
-                const newItem = { name: file.name, img: src, txt: res.data.text };
-                const storedArray = JSON.parse(sessionStorage.getItem('SeavedItem')) || [];
-                const updatedArray = [newItem,...storedArray]
-                setSaveItem(updatedArray);
-                sessionStorage.setItem('SeavedItem', JSON.stringify(updatedArray));
-                setOpenModals(new Array(updatedArray.length).fill(false));
-
-            })
+                })
                 .catch((err) => {
                     alert(`فایل ${file.name} ارسال نشد`);
                     console.log(err);
@@ -82,8 +81,8 @@ export default function UploadFile({ file, setFile,setSaveItem,saveItem }) {
         });
 
     }
-    const handleModalOpen = (index,txt) => {
-        localStorage.setItem('txt',txt)
+    const handleModalOpen = (index, txt) => {
+        localStorage.setItem('txt', txt)
         const updatedOpenModals = [...openModals];
         updatedOpenModals[index] = true;
         setOpenModals(updatedOpenModals);

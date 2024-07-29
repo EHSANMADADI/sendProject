@@ -8,7 +8,7 @@ import UploadFile from '../componenet/UploadFile';
 import Swal from 'sweetalert2';
 import { IoMdEye } from "react-icons/io";
 import { RiDeleteBin6Line } from "react-icons/ri";
-
+import useStore from '../Store/store.ts';
 export default function FerstPage() {
   const [file, setFile] = useState();
   const [error, setError] = useState('');
@@ -19,6 +19,7 @@ export default function FerstPage() {
   });
   console.log(saveItem);
 
+  const {setShowBTN } = useStore();
 
   useEffect(() => {
     sessionStorage.setItem('SeavedItem', JSON.stringify(saveItem));
@@ -84,7 +85,7 @@ export default function FerstPage() {
                   </div>
                   <div className='flex justify-between'>
                     <div className='flex'>
-                      <button className='border-dotted border-black rounded-md border-2 px-4 pt-1 pb-2 mx-2 sm:text-xl text-xs font-semibold text-center flex items-center hover:scale-105 duration-200' onClick={() => handleModalOpen(index, item.txt)}><span className='text-center mt-2 mr-2 text-2xl '><IoMdEye /></span>نمایش </button>
+                      <button className='border-dotted border-black rounded-md border-2 px-4 pt-1 pb-2 mx-2 sm:text-xl text-xs font-semibold text-center flex items-center hover:scale-105 duration-200' onClick={() => {setShowBTN(true); handleModalOpen(index, item.txt)}}><span className='text-center mt-2 mr-2 text-2xl '><IoMdEye /></span>نمایش </button>
                       <button className='border-dotted border-black rounded-md border-2 px-4 pt-1 pb-2 mx-2 sm:text-xl text-xs font-semibold text-center flex items-center  hover:scale-105 duration-200' onClick={() => handelremove(index)}><span className='text-center mt-2 mr-2 text-2xl text-red-600 ' onClick={() => { handelremove() }}><RiDeleteBin6Line /></span>حذف </button>
                     </div>
                   </div>

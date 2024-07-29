@@ -20,7 +20,7 @@ const EntitiesTable = ({ entities, onSelectItem }) => {
                                     <span 
                                         key={index} 
                                         onClick={() => handleClick(item)}
-                                        className={selectedItem === item ? 'selected-item' : ''}
+                                        className={selectedItem === item ? 'selected-item cursor-pointer' : 'cursor-pointer'}
                                     >
                                         {item} - 
                                     </span>

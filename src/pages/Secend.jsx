@@ -5,11 +5,14 @@ import EntitiesTable from '../componenet/EntitiesTable';
 import Swal from 'sweetalert2';
 import { Link, useNavigate } from "react-router-dom";
 import { LiaBackwardSolid } from "react-icons/lia";
-
+import Question from '../componenet/Question';
+import useStore from '../Store/store.ts';
+import Modal from '../componenet/Modal';
 export default function Secend() {
   const [response, setResponse] = useState(null);
   const [error, setError] = useState(null);
   const [selectedItem, setSelectedItem] = useState(null);
+  const { showQuestion, setShowQuestion } = useStore();
   const txt = localStorage.getItem('txt');
   const navigate = useNavigate();
 
@@ -57,20 +60,31 @@ export default function Secend() {
         : part
     ).join('');
   };
-    
+
   return (
     <div className='h-screen'>
       {response ? (
-        <div className='p-2 flex items-center flex-wrap flex-col text-xl'>
-          <div dangerouslySetInnerHTML={{ __html: getHighlightedText(response.predictions[0], selectedItem) }}></div>
-          <div className='w-full'>
-            <EntitiesTable entities={response.entities} onSelectItem={handleSelectItem} />
+        <div className='' dir='rtl'>
+          <div className='p-2 flex items-center flex-wrap flex-col text-xl'>
+            <div dangerouslySetInnerHTML={{ __html: getHighlightedText(response.predictions[0], selectedItem) }}></div>
+            <div className='w-full'>
+              <EntitiesTable entities={response.entities} onSelectItem={handleSelectItem} />
+            </div>
+            <div className='flex items-center px-5 py-3 bg-yellow-600 text-white font-semibold rounded-xl mt-10 hover:scale-75 hover:bg-yellow-400 duration-300'>
+              <span className='p-1 m-1 text-2xl'><LiaBackwardSolid /></span>
+              <Link to='/'>بازگشت به صفحه اصلی </Link>
+            </div>
           </div>
-          <div className='flex items-center px-5 py-3 bg-yellow-600 text-white font-semibold rounded-xl mt-10 hover:scale-75 hover:bg-yellow-400 duration-300'>
-            <span className='p-1 m-1 text-2xl'><LiaBackwardSolid /></span>
-            <Link to='/'>بازگشت به صفحه اصلی </Link>
+          <div className='w-auto max-w-72'>
+            <Question />
           </div>
+
+          <Modal Open={showQuestion} onClose={()=>setShowQuestion(false)} >
+          <div>slam</div>
+          </Modal>
+
         </div>
+
       ) : (
         <div className='flex w-full justify-center h-screen items-center'>
           <img src={loader} alt='Loading...' />

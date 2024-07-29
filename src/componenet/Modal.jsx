@@ -1,8 +1,10 @@
 import React from 'react'
 import { IoIosCloseCircle } from "react-icons/io";
 import { Link, Navigate } from "react-router-dom";
-export default function Modal({ Open, onClose, children,txt }) {
+import useStore from '../Store/store.ts';
+export default function Modal({ Open, onClose, children, txt }) {
 
+  const { showBTN } = useStore();
   if (!Open) return null;
 
 
@@ -10,7 +12,7 @@ export default function Modal({ Open, onClose, children,txt }) {
     if (e.target.id === 'wrapper') onClose();
 
   }
-  
+
   return (
     <div className='md:fixed  inset-0   flex justify-center items-center transition-colors bg-opacity-25 z-50  border-black' id='wrapper' onClick={Handelclose}>
       <div className='w-full sm:w-5/6 flex flex-col sm:mx-0 mx-auto'>
@@ -19,17 +21,20 @@ export default function Modal({ Open, onClose, children,txt }) {
           <div className='w-full'>
             {children}
           </div>
-          <div className='flex justify-center mt-5'>
-            <Link to={`/extract?text=${encodeURIComponent(txt)}`}  className='px-5 py-2 bg-orange-400 rounded-md  text-white font-semibold hover:scale-75 duration-300'>استخراج موجودیت ها
-            </Link>
-            <Link to={'/semantic'}
-            
-            className='px-5 py-2 bg-yellow-500 rounded-md mx-5 text-white font-semibold hover:scale-75 duration-300'> بهبود معنایی
-            </Link>
-            <Link to={'/spelling'}  className='px-5 py-2 bg-amber-600 rounded-md  text-white font-semibold hover:scale-75 duration-300'> بهبود املایی
-            </Link>
-           
-          </div>
+          {
+            showBTN && <div className='flex justify-center mt-5'>
+              <Link to={`/extract?text=${encodeURIComponent(txt)}`} className='px-5 py-2 bg-orange-400 rounded-md  text-white font-semibold hover:scale-75 duration-300'>استخراج موجودیت ها
+              </Link>
+              <Link to={'/semantic'}
+
+                className='px-5 py-2 bg-yellow-500 rounded-md mx-5 text-white font-semibold hover:scale-75 duration-300'> بهبود معنایی
+              </Link>
+              <Link to={'/spelling'} className='px-5 py-2 bg-amber-600 rounded-md  text-white font-semibold hover:scale-75 duration-300'> بهبود املایی
+              </Link>
+
+            </div>
+          }
+
 
 
         </div>
