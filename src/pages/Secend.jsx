@@ -8,6 +8,7 @@ import { LiaBackwardSolid } from "react-icons/lia";
 import Question from '../componenet/Question';
 import useStore from '../Store/store.ts';
 import Modal from '../componenet/Modal';
+import SelectModel from '../componenet/SelectModel.jsx';
 export default function Secend() {
   const [response, setResponse] = useState(null);
   const [error, setError] = useState(null);
@@ -24,7 +25,7 @@ export default function Secend() {
 
     const fetchData = async () => {
       try {
-        const res = await fetch('http://127.0.0.1:5001/ner', {
+        const res = await fetch('http://127.0.0.1:5000/ner', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -64,23 +65,41 @@ export default function Secend() {
   return (
     <div className='h-screen'>
       {response ? (
-        <div className='' dir='rtl'>
-          <div className='p-2 flex items-center flex-wrap flex-col text-xl'>
-            <div dangerouslySetInnerHTML={{ __html: getHighlightedText(response.predictions[0], selectedItem) }}></div>
-            <div className='w-full'>
-              <EntitiesTable entities={response.entities} onSelectItem={handleSelectItem} />
+        <div className='flex' dir='rtl'>
+          <div className='flex flex-col bg-gray-100 rounded-2xl w-2/3 mr-3'>
+            <div className='p-5 mr-10'>
+              <h4 className='text-xl font-bold py-4 ' >متن مورد نظر</h4>
+              <div className='bg-white border-dotted border-2 border-gray-200 rounded-2xl leading-10 font-semibold text-lg max-h-96 overflow-y-scroll'>
+                <div className='w-2/3 mx-auto text-center py-2'>
+                  <div dangerouslySetInnerHTML={{ __html: getHighlightedText(response.predictions[0], selectedItem) }}></div>
+
+                </div>
+
+              </div>
+              <div className='w-full'>
+                <EntitiesTable entities={response.entities} onSelectItem={handleSelectItem} />
+              </div>
+              <div className='border-b-4 my-5'></div>
+              <div >
+                <h4 className='text-xl font-bold py-4 ' >پاسخ پرسش</h4>
+                <div className='bg-white border-dotted border-2 border-gray-200 rounded-2xl leading-10 font-semibold text-lg h-56 overflow-y-scroll'>
+                  <div className='w-2/3 mx-auto  py-2'>
+                    <span className='text-gray-300 text-lg p-4'>پاسخ پرسش شما...</span>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className='flex items-center px-5 py-3 bg-yellow-600 text-white font-semibold rounded-xl mt-10 hover:scale-75 hover:bg-yellow-400 duration-300'>
-              <span className='p-1 m-1 text-2xl'><LiaBackwardSolid /></span>
-              <Link to='/'>بازگشت به صفحه اصلی </Link>
+            <div className='w-full mr-10 p-5'>
+              <Question />
             </div>
+
           </div>
-          <div className='w-auto max-w-72'>
-            <Question />
+          <div className='flex flex-col p-5 w-1/3 text-center justify-start mt-10'>
+            <SelectModel />
           </div>
 
-          <Modal Open={showQuestion} onClose={()=>setShowQuestion(false)} >
-          <div>slam</div>
+          <Modal Open={showQuestion} onClose={() => setShowQuestion(false)} >
+            <div>slam</div>
           </Modal>
 
         </div>

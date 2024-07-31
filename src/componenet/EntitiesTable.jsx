@@ -11,10 +11,10 @@ const EntitiesTable = ({ entities, onSelectItem }) => {
     const renderTable = (title, items) => {
         if (items.length) {
             return (
-                <div className='flex w-80 h-full' key={title}>
+                <div className='flex w-80 mx-5 h-full' key={title}>
                     <div className='flex flex-col w-full h-full'>
                         <h3 className='font-semibold text-xl p-2 my-3 h-full'>{title}</h3>
-                        <div className='p-5 border-2 border-yellow-600 rounded-md h-60 overflow-auto'>
+                        <div className='p-5 border-2 border-yellow-600 rounded-md h-52 overflow-y-auto'>
                             {
                                 items.map((item, index) => (
                                     <span 
@@ -37,7 +37,7 @@ const EntitiesTable = ({ entities, onSelectItem }) => {
     };
 
     return (
-        <div className='flex flex-wrap justify-evenly h-full w-full' dir='rtl'>
+        <div className='flex flex-wrap justify-start h-full w-full' dir='rtl'>
             {Object.keys(entities).map((key) => renderTable(key, entities[key]))}
         </div>
     );
