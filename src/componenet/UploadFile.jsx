@@ -7,7 +7,6 @@ import { useState } from 'react';
 import Swal from 'sweetalert2'
 import { IoMdEye } from "react-icons/io";
 import axios from 'axios';
-import Modal from './Modal';
 import loader from '../images/loader.gif'
 export default function UploadFile({ file, setFile, setSaveItem, saveItem }) {
     const [progress, setProgress] = useState(0);
@@ -38,35 +37,68 @@ export default function UploadFile({ file, setFile, setSaveItem, saveItem }) {
             reader.readAsDataURL(file);
             setProgress(0)
             setSend(false);
-            // formData.append('document', file);
+    ///////////////////////////////////////////////////////////////////JTD API   
             formData.append('image', file)
+            axios.post('https://195.191.45.56:8734/ocr', formData, {
+                onUploadProgress: (progressEvent) => {
+                    const percentage = Math.floor((progressEvent.loaded * 100) / progressEvent.total);
+                    setProgress(percentage);
+                },
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                },
 
-            // axios.post('http://195.191.45.56:80/api/read_document/', formData,
-            axios.post('https://195.191.45.56:8734/ocr', formData,
-                {
-                    onUploadProgress: (progressEvent) => {
-                        const percentage = Math.floor((progressEvent.loaded * 100) / progressEvent.total);
-                        setProgress(percentage);
-                    },
-                }).then((res) => {
-                    console.log(res);
-                    setReseveDta(true)
-                    setSend(true);
-                    setText(res.data.text);
-                    // localStorage.setItem('txt',res.data.text)///////////////////////////////////////////////////////////////////////////
-                    setOpen(true);
-                    const newItem = { name: file.name, img: src, txt: res.data.text };
-                    const storedArray = JSON.parse(sessionStorage.getItem('SeavedItem')) || [];
-                    const updatedArray = [newItem, ...storedArray]
-                    setSaveItem(updatedArray);
-                    sessionStorage.setItem('SeavedItem', JSON.stringify(updatedArray));
-                    setOpenModals(new Array(updatedArray.length).fill(false));
+            }).then((res) => {
+                console.log(res);
+                setReseveDta(true)
+                setSend(true);
+                setText(res.data.text);
+                setOpen(true);
+                const newItem = { name: file.name, img: src, txt: res.data.text };
+                const storedArray = JSON.parse(sessionStorage.getItem('SeavedItem')) || [];
+                const updatedArray = [...storedArray, newItem]
+                setSaveItem(updatedArray);
+                sessionStorage.setItem('SeavedItem', JSON.stringify(updatedArray));
+                setOpenModals(new Array(updatedArray.length).fill(false));
 
-                })
+            })
                 .catch((err) => {
                     alert(`فایل ${file.name} ارسال نشد`);
                     console.log(err);
                 })
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            // formData.append('document', file);//////Alephba API
+            // axios.post('http://195.191.45.56:80/api/read_document/', formData, 
+            //     {
+            //         headers: {
+            //             'Authorization': ' Token  a4d80ebb1aaab8067b110d7c18ac93427f0f36ab', // برای مثال، هدر Authorization
+            //         },
+            //         onUploadProgress: (progressEvent) => {
+            //             const percentage = Math.floor((progressEvent.loaded * 100) / progressEvent.total);
+            //             setProgress(percentage);
+            //         },
+            //     })
+            //     .then((res) => {
+            //         console.log(res.data.pages[0].text);
+            //         setReseveDta(true);
+            //         setSend(true);
+            //         setText(res.data.pages[0].text);
+            //         localStorage.setItem('txt', res.data.pages[0].text);
+            //         setOpen(true);
+            //         const newItem = { name: file.name, img: src, txt: res.data.pages[0].text};
+            //         const storedArray = JSON.parse(sessionStorage.getItem('SeavedItem')) || [];
+            //         const updatedArray = [newItem, ...storedArray];
+            //         setSaveItem(updatedArray);
+            //         sessionStorage.setItem('SeavedItem', JSON.stringify(updatedArray));
+            //         setOpenModals(new Array(updatedArray.length).fill(false));
+            //     })
+            //     .catch((err) => {
+            //         alert(`فایل ${file.name} ارسال نشد`);
+            //         console.log(err);
+            //     });
+            
         }
 
     }, [file])

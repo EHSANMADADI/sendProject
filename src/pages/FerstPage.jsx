@@ -96,9 +96,9 @@ export default function FerstPage() {
                       <div className='w-1/2'>
                         <img className='w-full max-h-[700px]' src={item.img} alt='selectedImg' />
                       </div>
-                      <div dir='rtl' className='border w-1/2 leading-10 bg-gray-50 rounded-2xl'>
+                      <div dir='rtl' className='border w-1/2 max-h-[700px] overflow-auto  leading-10 bg-gray-50 rounded-2xl'>
                         <h4 className='md:text-4xl text-xl   font-black text-blue-600 mb-5 mt-2 p-5'>متن تولید شده</h4>
-                        <p className='p-5 md:text-2xl text-lg font-black'>{item.txt}</p>
+                        <pre className='md:text-base text-sm font-black pr-2'>{item.txt}</pre>
                       </div>
                     </div>
                   </div>
