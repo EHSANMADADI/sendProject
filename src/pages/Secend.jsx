@@ -86,10 +86,10 @@ export default function Secend() {
               <div >
                 <h4 className='text-xl font-bold py-4 ' >پاسخ پرسش</h4>
                 <div className='bg-white border-dotted border-2 border-gray-200 rounded-2xl leading-10 font-semibold text-lg h-56 overflow-y-scroll'>
-                  <div className='w-2/3 mx-auto  py-2'>
+                  <div className='w-11/12 mx-auto  py-2'>
                   {answer===''&& <span className='text-gray-300 text-lg p-4'>پاسخ پرسش شما...</span>}
                   {
-                    answer!=''&& <p className='text-gray-800 text-lg p-2'>{answer}</p>
+                    answer!=''&& <p className='text-gray-800 text-lg p-2E'>{answer}</p>
                   }
                    
                   </div>
