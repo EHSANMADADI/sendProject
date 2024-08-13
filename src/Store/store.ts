@@ -5,6 +5,10 @@ type Store = {
     setShowQuestion: (show: boolean) => void;
     showBTN: boolean;
     setShowBTN: (showbtn: boolean) => void;
+    ////////////////////////////////////////////////
+   selectedModel:string;
+   ChangeSeletedModel: (modal: string) => void,
+
 };
 
 const useStore = create<Store>((set) => ({
@@ -12,6 +16,11 @@ const useStore = create<Store>((set) => ({
     showBTN:true,
     setShowBTN:(showbtn:boolean)=>set((state)=>({showBTN:showbtn})),
     setShowQuestion: (show:boolean) => set((state) => ({showQuestion:show})),
+
+
+    selectedModel:'model1',
+    ChangeSeletedModel:(model: string)=>set((state)=>({selectedModel:model})),
+  
 }));
 
 export default useStore;
