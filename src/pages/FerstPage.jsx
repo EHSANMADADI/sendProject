@@ -17,7 +17,7 @@ export default function FerstPage() {
     const storage = JSON.parse(sessionStorage.getItem('SeavedItem')) || [];
     return storage;
   });
-  console.log(saveItem);
+  // console.log(saveItem);
 
   const {setShowBTN } = useStore();
 

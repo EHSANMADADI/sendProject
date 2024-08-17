@@ -12,6 +12,7 @@ export default function Spelling() {
   const [response, setResponse] = useState(null);
   const [error, setError] = useState(null);
   const { showQuestion, setShowQuestion } = useStore();
+  const [answer, setAnswer] = useState("")
   useEffect(() => {
     if (!txt) {
       setError('No text provided in the query parameters.');
@@ -24,7 +25,7 @@ export default function Spelling() {
 
     const fetchData = async () => {
       try {
-        const res = await fetch('http://127.0.0.1:5001/spell_correction', {
+        const res = await fetch('http://195.191.45.56:17001/spell_correction', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -81,14 +82,17 @@ export default function Spelling() {
                 <h4 className='text-xl font-bold py-4 ' >پاسخ پرسش</h4>
                 <div className='bg-white border-dotted border-2 border-gray-200 rounded-2xl leading-10 font-semibold text-lg h-72 overflow-y-scroll'>
                   <div className='w-2/3 mx-auto  py-2'>
-                    <span className='text-gray-300 text-lg p-4'>پاسخ پرسش شما...</span>
+                  {answer === '' && <span className='text-gray-300 text-lg p-4'>پاسخ پرسش شما...</span>}
+                    {
+                      answer != '' && <p className='text-gray-800 text-lg p-2E'>{answer}</p>
+                    }
                   </div>
                 </div>
               </div>
 
             </div>
             <div className='w-full mr-10 p-5'>
-              <Question />
+              <Question setAnswer={setAnswer} />
             </div>
 
           </div>

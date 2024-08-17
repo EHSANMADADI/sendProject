@@ -2,11 +2,8 @@ import React, { useEffect, useState } from 'react';
 import './style.css';
 import loader from '../images/loader.gif';
 import EntitiesTable from '../componenet/EntitiesTable';
-import Swal from 'sweetalert2';
-import { LiaBackwardSolid } from "react-icons/lia";
 import Question from '../componenet/Question';
 import useStore from '../Store/store.ts';
-import Modal from '../componenet/Modal';
 import SelectModel from '../componenet/SelectModel.jsx';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
@@ -28,8 +25,9 @@ export default function Secend() {
       try {
         const res = await fetch('http://195.191.45.56:17001/ner', {
           method: 'POST',
+          // mode:'no-cors',
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
           },
           body: JSON.stringify({ text: [txt] })
         });
@@ -46,9 +44,6 @@ export default function Secend() {
       }
     };
     fetchData();
-
-
-
   }, [txt]);
 
   const handleSelectItem = (item) => {
@@ -87,17 +82,17 @@ export default function Secend() {
                 <h4 className='text-xl font-bold py-4 ' >پاسخ پرسش</h4>
                 <div className='bg-white border-dotted border-2 border-gray-200 rounded-2xl leading-10 font-semibold text-lg h-56 overflow-y-scroll'>
                   <div className='w-11/12 mx-auto  py-2'>
-                  {answer===''&& <span className='text-gray-300 text-lg p-4'>پاسخ پرسش شما...</span>}
-                  {
-                    answer!=''&& <p className='text-gray-800 text-lg p-2E'>{answer}</p>
-                  }
-                   
+                    {answer === '' && <span className='text-gray-300 text-lg p-4'>پاسخ پرسش شما...</span>}
+                    {
+                      answer != '' && <p className='text-gray-800 text-lg p-2E'>{answer}</p>
+                    }
+
                   </div>
                 </div>
               </div>
             </div>
             <div className='w-full mr-10 p-5'>
-            <ToastContainer/>
+              <ToastContainer />
               <Question setAnswer={setAnswer} />
             </div>
 
@@ -106,7 +101,7 @@ export default function Secend() {
             <SelectModel />
           </div>
 
-          
+
 
         </div>
 

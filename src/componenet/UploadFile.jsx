@@ -7,7 +7,7 @@ import { useState } from 'react';
 import Swal from 'sweetalert2'
 import { IoMdEye } from "react-icons/io";
 import axios from 'axios';
-import loader from '../images/loader.gif'
+
 export default function UploadFile({ file, setFile, setSaveItem, saveItem }) {
     const [progress, setProgress] = useState(0);
     const [send, setSend] = useState(false)
@@ -69,13 +69,13 @@ export default function UploadFile({ file, setFile, setSaveItem, saveItem }) {
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-            formData.append('document', file);//////Alephba API
-            axios.post('http://195.191.45.56:80/api/read_document/', formData, 
+            formData.append('image', file);//////Alephba API
+            axios.post('http://195.191.45.56:17010/process_image', formData, 
                 {
-                    headers: {
-                        'Authorization': ' Token  a4d80ebb1aaab8067b110d7c18ac93427f0f36ab', // برای مثال، هدر Authorization
-                        'Access-Control-Allow-Origin': '*',
-                    },
+                    // headers: {
+                    //     'Authorization': ' Token  a4d80ebb1aaab8067b110d7c18ac93427f0f36ab', // برای مثال، هدر Authorization
+                    //     'Access-Control-Allow-Origin': '*',
+                    // },
                     onUploadProgress: (progressEvent) => {
                         const percentage = Math.floor((progressEvent.loaded * 100) / progressEvent.total);
                         setProgress(percentage);
