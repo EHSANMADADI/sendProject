@@ -215,7 +215,7 @@ export default function UploadFile({ file, setFile, setSaveItem, saveItem }) {
                         </div>
                     </div>
                     {
-                        !send && <div className='flex justify-center'><span className='text-center text-black sm:text-2xl text-base'>...لطفا صبور باشید</span> <img src={loader} alt='loading' /></div>
+                        !send && <div className='flex justify-center'><span className='text-center text-black sm:text-2xl text-base'>...لطفا صبور باشید</span></div>
                     }
                 </div>
             }
