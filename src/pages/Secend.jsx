@@ -23,7 +23,7 @@ export default function Secend() {
 
     const fetchData = async () => {
       try {
-        const res = await fetch('http://195.191.45.56:17001/ner', {
+        const res = await fetch('http://195.191.45.56:17010/ner', {
           method: 'POST',
           // mode:'no-cors',
           headers: {
