@@ -16,7 +16,7 @@ export default function Question({setAnswer}) {
     console.log(Loading);
     setLoading(true);
     try {
-      const res = await fetch('http://195.191.45.56:17002/upload_text', {/////Aya
+      const res = await fetch('http://195.191.45.56:17010/upload_text', {/////Aya
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -65,7 +65,7 @@ export default function Question({setAnswer}) {
     console.log(Loading);
     setLoading(true);
     try {
-      const res = await fetch('http://195.191.45.56:17003/upload_text', {/////dorna
+      const res = await fetch('http://195.191.45.56:17010/upload_text_dorna', {/////dorna
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -113,7 +113,7 @@ export default function Question({setAnswer}) {
     console.log(question);
    
       try {
-        const res = await fetch('http://195.191.45.56:17002/chat', {
+        const res = await fetch('http://195.191.45.56:17010/chat', {
           method: 'POST',
           headers: {
             "Content-Type": "application/json"
@@ -153,7 +153,7 @@ export default function Question({setAnswer}) {
     console.log(question+'dorna');
       try {
         console.log(question);
-        const res = await fetch('http://195.191.45.56:17003/chat', {
+        const res = await fetch('http://195.191.45.56:17003/chat_dorna', {
           method: 'POST',
           headers: {
             "Content-Type": "application/json"

@@ -25,7 +25,7 @@ export default function Spelling() {
 
     const fetchData = async () => {
       try {
-        const res = await fetch('http://195.191.45.56:17001/spell_correction', {
+        const res = await fetch('http://195.191.45.56:17010/spell_correction', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'

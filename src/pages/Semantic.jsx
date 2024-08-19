@@ -26,7 +26,7 @@ export default function Semantic() {
 
     const fetchData = async () => {
       try {
-        const res = await fetch('http://195.191.45.56:17001/semantic_correction', {
+        const res = await fetch('http://195.191.45.56:17010/semantic_correction', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
