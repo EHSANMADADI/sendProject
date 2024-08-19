@@ -153,7 +153,7 @@ export default function Question({setAnswer}) {
     console.log(question+'dorna');
       try {
         console.log(question);
-        const res = await fetch('http://195.191.45.56:17003/chat_dorna', {
+        const res = await fetch('http://195.191.45.56:17010/chat_dorna', {
           method: 'POST',
           headers: {
             "Content-Type": "application/json"
