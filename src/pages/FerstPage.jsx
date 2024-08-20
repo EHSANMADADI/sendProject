@@ -46,6 +46,7 @@ export default function FerstPage() {
     updatedOpenModals[index] = false;
     setOpenModals(updatedOpenModals);
   };
+console.log(file);
 
   return (
     <div className='flex lg:overflow-hidden lg:flex-nowrap flex-wrap lg:h-screen '>

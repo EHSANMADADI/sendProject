@@ -38,6 +38,8 @@ export default function InputMultiple({ files, setFiles, error, setError }) {
     const handleButtonClick = () => {
         document.getElementById('dropzone-file').click();
     };
+    console.log(files);
+    
 
     return (
         <div className="md:w-1/2 w-full mx-auto max-h-screen  flex justify-center">

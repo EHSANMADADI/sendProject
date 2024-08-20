@@ -2,7 +2,7 @@ import React from 'react'
 import { IoIosCloseCircle } from "react-icons/io";
 import { Link, Navigate } from "react-router-dom";
 import useStore from '../Store/store.ts';
-export default function Modal({ Open, onClose, children, txt }) {
+export default function Modal({ Open, onClose, children }) {
 
   const { showBTN } = useStore();
   if (!Open) return null;
@@ -23,7 +23,7 @@ export default function Modal({ Open, onClose, children, txt }) {
           </div>
           {
             showBTN && <div className='flex justify-center mt-5'>
-              <Link to={`/extract?text=${encodeURIComponent(txt)}`} className='px-5 py-2 bg-orange-400 rounded-md  text-white font-semibold hover:scale-75 duration-300'>استخراج موجودیت ها
+              <Link to={'/extract'} className='px-5 py-2 bg-orange-400 rounded-md  text-white font-semibold hover:scale-75 duration-300'>استخراج موجودیت ها
               </Link>
               <Link to={'/semantic'}
 
