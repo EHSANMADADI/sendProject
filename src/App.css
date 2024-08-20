@@ -20,6 +20,17 @@
     scrollbar-color: #c0c0c0 #f0f0f0;
 }
 
+@font-face {
+    font-family: 'BYekan';
+    src: url('./Font/Yekan.ttf') format('ttf');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    font-family: 'BYekan', sans-serif;
+}
+
 /* ///////////////////// */
 .ner-box {
     direction: rtl;
