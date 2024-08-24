@@ -21,17 +21,17 @@ console.log(indexMultiple);
                 const selectedItem = items[indexMultiple];
                 
                 // دریافت responseText برای هر عنصر و اضافه کردن آن به fullText
-                const newText = selectedItem.map(item => item.responseText).join(' ');
-                setFullText(prevText => prevText + newText);
+                const newText = selectedItem.map(item => item.responseText).join('\n');
+                setFullText(prevText => prevText + '\n' + newText);
             }
         }
         getSavedItems();
     }, [indexMultiple]); // هر بار که indexMultiple تغییر کرد، این اثر دوباره اجرا می‌شود.
 
     return (
-        <div>
+        <div dir='rtl'>
             <p>MultipleNER</p>
-            <p>{fullText}</p> {/* نمایش fullText */}
+            <pre className='text-lg font-semibold'>{fullText}</pre> {/* نمایش fullText */}
         </div>
     );
 }

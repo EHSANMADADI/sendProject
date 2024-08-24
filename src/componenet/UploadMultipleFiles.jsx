@@ -57,15 +57,17 @@ export default function UploadMultipleFiles({ keys, files, setSaveItems, saveIte
           if (allSent) {
             setAllFilesUploaded(true);
             console.log(fileStates);
+          
   
             // Manage the localforage storage
             localforage.getItem('multiSeavedItems').then(async (storedArray) => {
               const parsedArray = storedArray ? JSON.parse(storedArray) : [];
               const updatedArray = [updatedStates, ...parsedArray];
               setSaveItems(updatedArray);
+             
             });
           }
-  
+        
           return updatedStates;
         });
       })
@@ -85,6 +87,18 @@ export default function UploadMultipleFiles({ keys, files, setSaveItems, saveIte
       }
     });
   }, []);
+
+  useEffect(() => {
+    if (allFilesUploaded) {
+      localforage.setItem('multiSeavedItems', JSON.stringify(saveItems))
+        .then(() => {
+          console.log('Items saved successfully');
+        })
+        .catch((err) => {
+          console.error('Error saving items:', err);
+        });
+    }
+  }, [fileStates, allFilesUploaded]);
 
   return (
     <div>

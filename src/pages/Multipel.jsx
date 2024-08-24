@@ -22,6 +22,8 @@ export default function Multipel() {
             setSaveItems(JSON.parse(storedItems) || []);
         }
         getSavedItems();
+        console.log(saveItems);
+        
         if (saveItems.length > 0) {
             localforage.setItem('multiSeavedItems', JSON.stringify(saveItems));
         }
