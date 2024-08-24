@@ -17,6 +17,7 @@ function App() {
         <Route path="multiple" element={<Multipel/>}/>
         <Route path="multiple/extract" element={<MultipleNER/>}/>
         <Route path="*" element={< FerstPage />} />
+        <Route path="multiple/extract" element={<MultipleNER/>}/>
 
       </Routes>
     </BrowserRouter>

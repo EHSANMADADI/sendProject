@@ -8,8 +8,8 @@ type Store = {
     ////////////////////////////////////////////////
    selectedModel:string;
    ChangeSeletedModel: (modal: string) => void,
-   indexText:number,
-   ChangeIndexText: (index: number) => void
+   indexMultiple:number,
+   ChangeIndexMultiple: (index: number) => void
 };
 
 const useStore = create<Store>((set) => ({
@@ -23,8 +23,8 @@ const useStore = create<Store>((set) => ({
     ChangeSeletedModel:(model: string)=>set((state)=>({selectedModel:model})),
 
 
-    indexText:-1,
-    ChangeIndexText:(index:number)=>set((state)=>({indexText:index}))
+    indexMultiple:-1,
+    ChangeIndexMultiple:(index:number)=>set((state)=>({indexMultiple:index}))
   
 }));
 
