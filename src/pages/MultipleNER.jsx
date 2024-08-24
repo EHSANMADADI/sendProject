@@ -22,20 +22,20 @@ export default function MultipleNER() {
             const storedItems = await localforage.getItem('multiSeavedItems');
             const items = JSON.parse(storedItems) || [];
             setSaveItems(items);
-            console.log(items);//[[{}]]
-
-
+            console.log(items); // [[{}]]
+    
             // بررسی اینکه آیا آرایه دارای عنصری در indexMultiple هست
             if (items.length > indexMultiple) {
                 const selectedItem = items[indexMultiple];
-
+    
                 // دریافت responseText برای هر عنصر و اضافه کردن آن به fullText
-                const newText = selectedItem.map(item => item.responseText).join('\n');
-                setFullText(prevText => prevText + '\n' + newText);
+                const newText = selectedItem.map(item => item.responseText+'\n'+'\n').join('\n');
+                setFullText(newText); // فقط یک بار مقدار جدید را تنظیم کنید
             }
         }
         getSavedItems();
-    }, [indexMultiple]); // هر بار که indexMultiple تغییر کرد، این تابع دوباره اجرا می‌شود.
+    }, [indexMultiple]);
+    
 
 
     useEffect(() => {
