@@ -117,10 +117,11 @@ export default function UploadMultipleFiles({ keys, files, setSaveItems, saveIte
               <div className="flex justify-end mb-1">
                 <span className="text-sm font-medium text-gray-400 dark:text-white">{progressAll}%</span>
               </div>
-              <div className='flex justify-between'>
-                <div className='flex'>
-                  <button className='border-dotted border-black rounded-md border-2 sm:px-4 px-2 pt-1 pb-2 mx-2 sm:text-xl text-xs  font-semibold text-center flex items-center hover:scale-105 duration-200' onClick={() => alert('لطفا صبر کنید تا پردازش تکمیل شود')}><span className='text-center mt-2 mr-2 text-2xl '><IoMdEye /></span>نمایش </button>
-                  <button className='border-dotted border-black rounded-md border-2 sm:px-4 px-2 pt-1 pb-2 mx-2 sm:text-xl text-xs  font-semibold text-center flex items-center  hover:scale-105 duration-200' onClick={() => console.log("a")}><span className='text-center mt-2 mr-2 text-2xl text-red-600 '><RiDeleteBin6Line /></span>حذف </button>
+              <div className='flex'>
+                <div className='flex justify-between w-full items-center'>
+                <button className='border-dotted border-black rounded-md border-2 sm:px-4 px-2 pt-1 pb-2 mx-2 sm:text-xl text-xs  font-semibold flex items-center text-center  hover:scale-105 duration-200' onClick={() => console.log("a")}><span className='text-center  mr-2 text-2xl text-red-600 '><RiDeleteBin6Line /></span>حذف </button>
+                  <button className='border-dotted border-black rounded-md border-2 sm:px-4 px-2 pt-1 pb-2 mx-2 sm:text-xl text-xs  font-semibold text-center flex items-center hover:scale-105 duration-200' onClick={() => alert('لطفا صبر کنید تا پردازش تکمیل شود')}><span className='text-center  mr-2 text-2xl '><IoMdEye /></span>نمایش </button>
+                 
                 </div>
 
               </div>

@@ -49,9 +49,11 @@ export default function InputMultiple({ files, setFiles, error, setError }) {
                         <div className="flex flex-col items-center justify-center pt-5 pb-6 mt-5">
                             <span className='text-8xl mb-4 text-blue-400'><FaCloudUploadAlt/></span>
                             <p className='md:text-2xl text-base font-bold'>فایل های خود را انتخاب کنید</p>
-                            <p className='md:text-2xl text-base font-bold mt-10 mb-5'>یا</p>
                         </div>
                         <button type="button" onClick={handleButtonClick} className='px-6 py-2 bg-orange-400 opacity-80 rounded-xl font-black text-xl shadow-2xl hover:opacity-100 border-[3px] border-orange-200'>انتخاب فایل ها</button>
+                        <p className='md:text-2xl text-base font-bold mt-10 mb-5'>یا</p>
+                        <button onClick={handleButtonClick} className='px-6 py-2 bg-orange-400 opacity-80 rounded-xl font-black text-xl shadow-2xl hover:opacity-100 border-[3px] border-orange-200'>انتخاب فرم</button>
+
                         <input multiple id="dropzone-file" type="file" accept='.jpg,.jpeg,.png' className="hidden" onChange={handleFileChange} />
                     </label>
                 </div>

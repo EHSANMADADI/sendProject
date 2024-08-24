@@ -5,6 +5,7 @@ import Secend from './pages/Secend';
 import Semantic from './pages/Semantic';
 import Spelling from './pages/Spelling';
 import Multipel from './pages/Multipel';
+import MultipleNER from './pages/MultipleNER';
 function App() {
   return (
     <BrowserRouter>
@@ -14,7 +15,7 @@ function App() {
         <Route path="semantic" element={<Semantic />} />
         <Route path="spelling" element={<Spelling />} />
         <Route path="multiple" element={<Multipel/>}/>
-
+        <Route path="multiple/extract" element={<MultipleNER/>}/>
         <Route path="*" element={< FerstPage />} />
 
       </Routes>
