@@ -22,15 +22,14 @@ export default function Multipel() {
             setSaveItems(JSON.parse(storedItems) || []);
         }
         getSavedItems();
+        if (saveItems.length > 0) {
+            localforage.setItem('multiSeavedItems', JSON.stringify(saveItems));
+        }
     }, []);
 
     const { setShowBTN } = useStore();
 
-    useEffect(() => {
-        if (saveItems.length > 0) {
-            localforage.setItem('multiSeavedItems', JSON.stringify(saveItems));
-        }
-    }, [saveItems]);
+   
 
     const handelremove = (id) => {
         const updatedItems = saveItems.filter((_, i) => i !== id);
