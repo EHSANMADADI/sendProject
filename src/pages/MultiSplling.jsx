@@ -1,51 +1,68 @@
 import React, { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
-import loader from '../images/loader.gif';
+import localforage from 'localforage';
+import useStore from '../Store/store.ts';
 import Question from '../componenet/Question.jsx';
 import SelectModel from '../componenet/SelectModel.jsx';
-export default function Spelling() {
-  const txt = localStorage.getItem('txt');
-  const [response, setResponse] = useState(null);
+import loader from'../images/loader.gif'
+export default function MultiSplling() {
+    const [response, setResponse] = useState(null);
   const [error, setError] = useState(null);
   const [answer, setAnswer] = useState("")
+  const [fullText, setFullText] = useState('');
+  const [saveItems, setSaveItems] = useState([]);
+  const { indexMultiple } = useStore();
+
   useEffect(() => {
-    if (!txt) {
-      setError('No text provided in the query parameters.');
-      Swal.fire({
-        title: "No text provided in the query parameters.",
-        icon: "error"
-      });
-      return;
-    }
+    async function getSavedItems() {
+        const storedItems = await localforage.getItem('multiSeavedItems');
+        const items = JSON.parse(storedItems) || [];
+        setSaveItems(items);
+        console.log(items); // [[{}]]
 
-    const fetchData = async () => {
-      try {
-        const res = await fetch('http://195.191.45.56:17010/spell_correction', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ text: txt })
-        });
-        if (!res.ok) {
-          Swal.fire({
-            title: `${res.statusText}`,
-            icon: "error"
-          });
-          throw new Error(`HTTP error! status: ${res.status}`);
+        // بررسی اینکه آیا آرایه دارای عنصری در indexMultiple هست
+        if (items.length > indexMultiple) {
+            const selectedItem = items[indexMultiple];
+
+            // دریافت responseText برای هر عنصر و اضافه کردن آن به fullText
+            const newText = selectedItem.map(item => item.responseText+'\n'+'\n').join('\n');
+            setFullText(newText); // فقط یک بار مقدار جدید را تنظیم کنید
         }
-
-        const data = await res.json();
-        setResponse(data);
-        console.log(res);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-        setError('Error fetching data.');
-      }
-    };
-
-    fetchData();
-  }, [txt]);
+    }
+    getSavedItems();
+}, [indexMultiple]);
+useEffect(() => {
+    if (fullText) {
+      const fetchData = async () => {
+        try {
+          const res = await fetch('http://195.191.45.56:17010/spell_correction', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ text: fullText })
+          });
+          if (!res.ok) {
+            Swal.fire({
+              title: `${res.statusText}`,
+              icon: "error"
+            });
+            throw new Error(`HTTP error! status: ${res.status}`);
+          }
+  
+          const data = await res.json();
+          setResponse(data);
+          console.log(res);
+        } catch (error) {
+          console.error('Error fetching data:', error);
+          setError('Error fetching data.');
+        }
+      };
+  
+      fetchData();
+    }
+  }, [fullText]);
+  
 
   const parseText = (text) => {
     const regex = /\(([^)]+)\)/g;
