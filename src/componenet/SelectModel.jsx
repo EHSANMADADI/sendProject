@@ -35,7 +35,7 @@ export default function SelectModel() {
                 </div>
             </div>
             <div className='border-b-2 my-5 border-black w-2/3 mx-auto'></div>
-            <BackYoHome />
+            
 
 
         </div>

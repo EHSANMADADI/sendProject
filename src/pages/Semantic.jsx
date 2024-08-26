@@ -7,6 +7,7 @@ import useStore from '../Store/store.ts';
 import Question from '../componenet/Question.jsx';
 import Modal from '../componenet/Modal.jsx';
 import SelectModel from '../componenet/SelectModel.jsx';
+import  BackYoHome from '../componenet/BackYoHome.jsx'
 export default function Semantic() {
   const txt = localStorage.getItem('txt');
   const [response, setResponse] = useState(null);
@@ -98,6 +99,7 @@ export default function Semantic() {
           </div>
           <div className='flex flex-col p-5 w-1/3 text-center justify-center'>
             <SelectModel/>
+            <BackYoHome />
           </div>
 
 

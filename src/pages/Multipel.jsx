@@ -15,6 +15,9 @@ export default function Multipel() {
     const [error, setError] = useState('');
     const [openModals, setOpenModals] = useState([]);
     const [saveItems, setSaveItems] = useState([]);
+    console.log(setSaveItems.length);
+    console.log("seaveItem",setSaveItems);
+    
 
     useEffect(() => {
         async function getSavedItems() {
@@ -115,7 +118,7 @@ export default function Multipel() {
                                         >
                                             <div key={i} className="flex h-full">
                                                 <div dir='rtl' className="w-1/2 overflow-x-auto max-h-[80vh] p-2">
-                                                    <div className={`grid grid-cols-1 gap-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-${Math.ceil(itemArray.length / 2)}`}>
+                                                    <div className={`grid grid-cols-1 gap-1 md:grid-cols-2 xl:grid-cols-${Math.ceil(itemArray.length-1 / 2)}`}>
                                                         {itemArray.map((detail, index) => (
                                                             <div key={index} className="relative">
                                                                 <img

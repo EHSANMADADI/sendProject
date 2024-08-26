@@ -5,6 +5,7 @@ import Swal from 'sweetalert2';
 import Question from '../componenet/Question.jsx';
 import SelectModel from '../componenet/SelectModel.jsx';
 import loader from'../images/loader.gif'
+import  BackYoHome from '../componenet/BackYoHome.jsx'
 export default function MultiSemantic() {
   const [response, setResponse] = useState(null);
   const [error, setError] = useState(null);
@@ -110,6 +111,7 @@ useEffect(() => {
           </div>
           <div className='flex flex-col p-5 w-1/3 text-center justify-center'>
             <SelectModel/>
+            <BackYoHome path='multiple' />
           </div>
 
 

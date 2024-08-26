@@ -3,6 +3,7 @@ import Swal from 'sweetalert2';
 import loader from '../images/loader.gif';
 import Question from '../componenet/Question.jsx';
 import SelectModel from '../componenet/SelectModel.jsx';
+import  BackYoHome from '../componenet/BackYoHome.jsx'
 export default function Spelling() {
   const txt = localStorage.getItem('txt');
   const [response, setResponse] = useState(null);
@@ -93,6 +94,7 @@ export default function Spelling() {
           </div>
           <div className='flex flex-col p-5 w-1/3 text-center justify-center'>
             <SelectModel/>
+            <BackYoHome />
           </div>
 
 

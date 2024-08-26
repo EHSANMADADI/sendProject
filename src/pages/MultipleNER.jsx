@@ -7,6 +7,7 @@ import SelectModel from '../componenet/SelectModel.jsx';
 import loader from '../images/loader.gif';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
+import  BackYoHome from '../componenet/BackYoHome.jsx'
 export default function MultipleNER() {
     const [response, setResponse] = useState(null);
     const [error, setError] = useState(null);
@@ -122,6 +123,7 @@ export default function MultipleNER() {
                     </div>
                     <div className='flex flex-col p-5 w-1/3 text-center justify-start mt-10'>
                         <SelectModel />
+                        <BackYoHome path='multiple' />
                     </div>
 
 
