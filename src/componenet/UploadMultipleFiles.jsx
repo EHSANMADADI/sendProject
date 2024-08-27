@@ -6,9 +6,7 @@ import { FaCheckCircle } from "react-icons/fa";
 import { IoMdEye } from "react-icons/io";
 import { RiDeleteBin6Line } from "react-icons/ri";
 
-export default function UploadMultipleFiles({ keys, files, setSaveItems, saveItems, setFiles,setAllFilesUploaded,allFilesUploaded }) {
-  const [reseveDta, setReseveDta] = useState(false);
-  const [progressAll, setProgressAll] = useState(0);
+export default function UploadMultipleFiles({ keys, files, setSaveItems, saveItems, setFiles, setAllFilesUploaded, allFilesUploaded }) {
   const [fileStates, setFileStates] = useState(files.map(file => ({
     file,
     responseText: '',
@@ -17,9 +15,8 @@ export default function UploadMultipleFiles({ keys, files, setSaveItems, saveIte
     progress: 0,
     url_document: '',
   })));
-
-  // const [allFilesUploaded, setAllFilesUploaded] = useState(false);
-  const [selectedImage, setSelectedImage] = useState();
+  
+  const [progressAll, setProgressAll] = useState(0);
 
   const handleUpload = (fileState, index) => {
     const formData = new FormData();
@@ -28,7 +25,6 @@ export default function UploadMultipleFiles({ keys, files, setSaveItems, saveIte
     var imageUrls;
     const reader = new FileReader();
     reader.onload = (e) => {
-      setSelectedImage(e.target.result);
       imageUrls = e.target.result;
     };
     reader.readAsDataURL(fileState.file);
@@ -43,47 +39,52 @@ export default function UploadMultipleFiles({ keys, files, setSaveItems, saveIte
         });
       }
     })
-      .then(async (res) => {
-        console.log(res.data.document_url);
-
-        // Update the file state
-        setFileStates(prevStates => {
-          const updatedStates = [...prevStates];
-          updatedStates[index].isSent = true;
-          updatedStates[index].responseText = res.data.pages[0].text;
-          updatedStates[index].src = imageUrls;
-          updatedStates[index].url_document=res.data.document_url;
-          setProgressAll(100 / fileStates.length - index);
-
-          // Check if all files have been uploaded
-          const allSent = updatedStates.every(state => state.isSent);
-          if (allSent) {
-            setAllFilesUploaded(true);
-
-            // Manage the localforage storage
-            const storedArray = localStorage.getItem('multiSeavedItems');
-            const parsedArray = storedArray ? JSON.parse(storedArray) : [];
-            const updatedArray = [updatedStates, ...parsedArray];
-            setSaveItems(updatedArray);
-          }
-
-          return updatedStates;
-        });
-      })
-      .catch(err => {
-        alert(`فایل ${fileState.file.name} ارسال نشد`);
-        console.log(err);
+    .then(async (res) => {
+      setFileStates(prevStates => {
+        const updatedStates = [...prevStates];
+        updatedStates[index].isSent = true;
+        updatedStates[index].responseText = res.data.pages[0].text;
+        updatedStates[index].src = imageUrls;
+        updatedStates[index].url_document = res.data.document_url;
+        return updatedStates;
       });
+    })
+    .catch(err => {
+      alert(`فایل ${fileState.file.name} ارسال نشد`);
+      console.log(err);
+    });
   };
 
   useEffect(() => {
-    fileStates.forEach((fileState, index) => {
-      if (!fileState.isSent) {
-        handleUpload(fileState, index);
-      }
-    });
-  }, []); 
- 
+    const unsentFiles = fileStates.filter(fileState => !fileState.isSent);
+    if (unsentFiles.length > 0) {
+      unsentFiles.forEach((fileState, index) => {
+        handleUpload(fileState, fileStates.findIndex(state => state.file === fileState.file));
+      });
+    }
+  }, [fileStates]);
+
+  useEffect(() => {
+    const totalFiles = fileStates.length;
+    const sentFiles = fileStates.filter(fileState => fileState.isSent).length;
+    const newProgressAll = totalFiles === 0 ? 0 : Math.floor((sentFiles / totalFiles) * 100);
+    setProgressAll(newProgressAll);
+    
+    if (sentFiles === totalFiles && totalFiles > 0) {
+      setAllFilesUploaded(true);
+      
+      localforage.getItem('multiSeavedItems')
+        .then(storedArray => {
+          const parsedArray = storedArray || [];
+          const updatedArray = [fileStates, ...parsedArray];
+          return localforage.setItem('multiSeavedItems', updatedArray);
+        })
+        .then(() => {
+          console.log('Items saved successfully');
+        })
+        .catch(err => console.error('Error managing localForage storage:', err));
+    }
+  }, [fileStates]);
 
   return (
     <div>

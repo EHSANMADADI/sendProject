@@ -19,23 +19,29 @@ export default function MultipleNER() {
     console.log(indexMultiple);
    
     useEffect(() => {
-         function getSavedItems() {
-            const storedItems = localStorage.getItem('multiSeavedItems');
-            const items = JSON.parse(storedItems) || [];
-            setSaveItems(items);
-            console.log(items); // [[{}]]
+        function getSavedItems() {
+            localforage.getItem('multiSeavedItems')
+                .then(items => {
+                    const parsedItems = items || [];
+                    setSaveItems(parsedItems);
+                    console.log(parsedItems); // [[{}]]
     
-            // بررسی اینکه آیا آرایه دارای عنصری در indexMultiple هست
-            if (items.length > indexMultiple) {
-                const selectedItem = items[indexMultiple];
+                    // بررسی اینکه آیا آرایه دارای عنصری در indexMultiple هست
+                    if (parsedItems.length > indexMultiple) {
+                        const selectedItem = parsedItems[indexMultiple];
     
-                // دریافت responseText برای هر عنصر و اضافه کردن آن به fullText
-                const newText = selectedItem.map(item => item.responseText+'\n'+'\n').join('\n');
-                setFullText(newText); // فقط یک بار مقدار جدید را تنظیم کنید
-            }
+                        // دریافت responseText برای هر عنصر و اضافه کردن آن به fullText
+                        const newText = selectedItem.map(item => item.responseText + '\n' + '\n').join('\n');
+                        setFullText(newText); // فقط یک بار مقدار جدید را تنظیم کنید
+                    }
+                })
+                .catch(err => {
+                    console.error('Error retrieving items from localForage:', err);
+                });
         }
         getSavedItems();
     }, [indexMultiple]);
+    
     
 
 
