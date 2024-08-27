@@ -1,4 +1,4 @@
-import React, { useState, useEffect,useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Modal from '../componenet/Modal';
 import img from '../images/img.png'
 import InputMultiple from '../componenet/InputMultiple';
@@ -11,6 +11,7 @@ import UploadMultipleFiles from '../componenet/UploadMultipleFiles.jsx';
 import { FaDownload } from "react-icons/fa6";
 import { saveAs } from 'file-saver';
 import { Document, Packer, Paragraph, TextRun } from 'docx';
+import localforage from 'localforage';
 export default function Multipel() {
     const [files, setFiles] = useState(null);
     const [error, setError] = useState('');
@@ -20,49 +21,56 @@ export default function Multipel() {
     console.log("multiple files", files);
     const hasSaved = useRef(false);
 
+    
+
     useEffect(() => {
         if (allFilesUploaded && !hasSaved.current) {
-            localStorage.setItem('multiSeavedItems', JSON.stringify(saveItems));
-            console.log('Items saved successfully');
-            hasSaved.current = true;
-            window.location.reload();
+            localforage.setItem('multiSeavedItems', saveItems)
+                .then(() => {
+                    console.log('Items saved successfully');
+                    hasSaved.current = true;
+                    window.location.reload();
+                })
+                .catch(err => console.error('Error saving items:', err));
         }
     }, [allFilesUploaded, saveItems]);
-    
-    
+
+
+
 
     useEffect(() => {
         function getSavedItems() {
-            const storedItems = localStorage.getItem('multiSeavedItems');
-            setSaveItems(JSON.parse(storedItems) || []);
+            localforage.getItem('multiSeavedItems')
+                .then(storedItems => {
+                    setSaveItems(storedItems || []);
+                })
+                .catch(err => console.error('Error retrieving items:', err));
         }
         getSavedItems();
-      
-
-        // if (saveItems.length > 0) {
-        //     localforage.setItem('multiSeavedItems', JSON.stringify(saveItems));
-        // }
     }, []);
+    
 
     const { setShowBTN, ChangeIndexMultiple } = useStore();
-   
+
 
 
     const handelremove = (id) => {
         const updatedItems = saveItems.filter((_, i) => i !== id);
         setSaveItems(updatedItems);
-
-        // به‌روزرسانی مقادیر در localStorage
-        try {
-            localStorage.setItem('multiSeavedItems', JSON.stringify(updatedItems));
-            Swal.fire({
-                title: "فایل با موفقیت حذف شد",
-                icon: "success"
+    
+        // به‌روزرسانی مقادیر در localForage
+        localforage.setItem('multiSeavedItems', updatedItems)
+            .then(() => {
+                Swal.fire({
+                    title: "فایل با موفقیت حذف شد",
+                    icon: "success"
+                });
+            })
+            .catch(error => {
+                console.error("Error updating localForage: ", error);
             });
-        } catch (error) {
-            console.error("Error updating localStorage: ", error);
-        }
     };
+    
 
 
 
@@ -81,7 +89,7 @@ export default function Multipel() {
 
     const handelDownloadWord = (index) => {
         var combinedResponseText = ''; // متغیر برای ذخیره تمام responseText ها
-    
+
         saveItems[index].forEach((item) => {
             if (item.responseText) {
                 combinedResponseText += item.responseText;
@@ -89,12 +97,12 @@ export default function Multipel() {
                 console.warn("responseText is missing for an item at index:", index);
             }
         });
-    
+
         if (!combinedResponseText) {
             console.error("No valid responseText found for index:", index);
             return;
         }
-    
+
         const doc = new Document({
             sections: [
                 {
@@ -108,14 +116,14 @@ export default function Multipel() {
                 },
             ],
         });
-    
+
         Packer.toBlob(doc).then(blob => {
             saveAs(blob, "Report.docx");
         }).catch(error => {
             console.error("Error while creating or saving the document:", error);
         });
     };
-    
+
 
     return (
         <div className='flex lg:overflow-hidden lg:flex-nowrap flex-wrap lg:h-screen '>
