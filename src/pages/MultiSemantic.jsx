@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import localforage from 'localforage';
 import useStore from '../Store/store.ts';
 import Swal from 'sweetalert2';
 import Question from '../componenet/Question.jsx';
@@ -15,8 +14,8 @@ export default function MultiSemantic() {
   const { indexMultiple } = useStore();
 
   useEffect(() => {
-    async function getSavedItems() {
-        const storedItems = await localforage.getItem('multiSeavedItems');
+     function getSavedItems() {
+        const storedItems =  localStorage.getItem('multiSeavedItems');
         const items = JSON.parse(storedItems) || [];
         setSaveItems(items);
         console.log(items); // [[{}]]

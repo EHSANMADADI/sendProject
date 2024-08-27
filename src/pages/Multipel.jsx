@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import localforage from 'localforage';
+import React, { useState, useEffect,useRef } from 'react';
 import Modal from '../componenet/Modal';
 import img from '../images/img.png'
 import InputMultiple from '../componenet/InputMultiple';
@@ -9,48 +8,63 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import useStore from '../Store/store.ts';
 import { FaCheckCircle } from "react-icons/fa"
 import UploadMultipleFiles from '../componenet/UploadMultipleFiles.jsx';
-
+import { FaDownload } from "react-icons/fa6";
+import { saveAs } from 'file-saver';
+import { Document, Packer, Paragraph, TextRun } from 'docx';
 export default function Multipel() {
     const [files, setFiles] = useState(null);
     const [error, setError] = useState('');
     const [openModals, setOpenModals] = useState([]);
     const [saveItems, setSaveItems] = useState([]);
-    console.log(setSaveItems.length);
-    console.log("seaveItem",setSaveItems);
+    const [allFilesUploaded, setAllFilesUploaded] = useState(false);
+    console.log("multiple files", files);
+    const hasSaved = useRef(false);
+
+    useEffect(() => {
+        if (allFilesUploaded && !hasSaved.current) {
+            localStorage.setItem('multiSeavedItems', JSON.stringify(saveItems));
+            console.log('Items saved successfully');
+            hasSaved.current = true;
+            window.location.reload();
+        }
+    }, [allFilesUploaded, saveItems]);
+    
     
 
     useEffect(() => {
-        async function getSavedItems() {
-            const storedItems = await localforage.getItem('multiSeavedItems');
+        function getSavedItems() {
+            const storedItems = localStorage.getItem('multiSeavedItems');
             setSaveItems(JSON.parse(storedItems) || []);
         }
         getSavedItems();
-        console.log(saveItems);
-        
-        if (saveItems.length > 0) {
-            localforage.setItem('multiSeavedItems', JSON.stringify(saveItems));
-        }
+      
+
+        // if (saveItems.length > 0) {
+        //     localforage.setItem('multiSeavedItems', JSON.stringify(saveItems));
+        // }
     }, []);
 
-    const { setShowBTN,ChangeIndexMultiple } = useStore();
-
+    const { setShowBTN, ChangeIndexMultiple } = useStore();
    
+
 
     const handelremove = (id) => {
         const updatedItems = saveItems.filter((_, i) => i !== id);
         setSaveItems(updatedItems);
-    
-        // به‌روزرسانی مقادیر در localforage
-        localforage.setItem('multiSeavedItems', JSON.stringify(updatedItems)).then(() => {
+
+        // به‌روزرسانی مقادیر در localStorage
+        try {
+            localStorage.setItem('multiSeavedItems', JSON.stringify(updatedItems));
             Swal.fire({
                 title: "فایل با موفقیت حذف شد",
                 icon: "success"
             });
-        }).catch((error) => {
-            console.error("Error updating localforage: ", error);
-        });
+        } catch (error) {
+            console.error("Error updating localStorage: ", error);
+        }
     };
-    
+
+
 
     const handleModalOpen = (index, txt) => {
         localStorage.setItem('txt', txt)
@@ -64,6 +78,44 @@ export default function Multipel() {
         updatedOpenModals[index] = false;
         setOpenModals(updatedOpenModals);
     };
+
+    const handelDownloadWord = (index) => {
+        var combinedResponseText = ''; // متغیر برای ذخیره تمام responseText ها
+    
+        saveItems[index].forEach((item) => {
+            if (item.responseText) {
+                combinedResponseText += item.responseText;
+            } else {
+                console.warn("responseText is missing for an item at index:", index);
+            }
+        });
+    
+        if (!combinedResponseText) {
+            console.error("No valid responseText found for index:", index);
+            return;
+        }
+    
+        const doc = new Document({
+            sections: [
+                {
+                    children: [
+                        new Paragraph({
+                            children: [
+                                new TextRun(combinedResponseText),
+                            ],
+                        }),
+                    ],
+                },
+            ],
+        });
+    
+        Packer.toBlob(doc).then(blob => {
+            saveAs(blob, "Report.docx");
+        }).catch(error => {
+            console.error("Error while creating or saving the document:", error);
+        });
+    };
+    
 
     return (
         <div className='flex lg:overflow-hidden lg:flex-nowrap flex-wrap lg:h-screen '>
@@ -81,18 +133,19 @@ export default function Multipel() {
                         </div>
                     }
                     {
-                        files && <UploadMultipleFiles files={files} setFiles={setFiles} setSaveItems={setSaveItems} saveItems={saveItems} />
+                        files && <UploadMultipleFiles allFilesUploaded={allFilesUploaded} setAllFilesUploaded={setAllFilesUploaded} keys={files.length} files={files} setFiles={setFiles} setSaveItems={setSaveItems} saveItems={saveItems} />
                     }
 
                     {
                         saveItems.length > 0 && saveItems.map((itemArray, index) => (
-                            <div key={index} className='seavItem border border-gray-100 shadow-2xl rounded-lg xl:mx-6 mx-1 xl:p-5 py-2 mb-10'>
+                            <div key={index} className='box-Item seavItem border border-gray-100 shadow-2xl rounded-lg xl:mx-6 mx-1 xl:p-5 py-2 mb-10'>
                                 <div className='flex justify-between items-center md:mx-5 mx-2'>
                                     <p className='text-xl font-semibold'>پردازش تکمیل شد</p>
                                     <div className='text-lg text-green-500'>
                                         <FaCheckCircle />
                                     </div>
                                 </div>
+
                                 <div className='sm:mx-6 mx-0 mt-1'>
                                     <div className="bg-gray-200 rounded-full h-2 dark:bg-gray-700 ">
                                         <div className="bg-orange-400 h-2 rounded-full" style={{ width: '100%' }}></div>
@@ -102,9 +155,9 @@ export default function Multipel() {
                                     </div>
                                     <div className='flex'>
                                         <div className='flex justify-between w-full'>
-                                        <button className='border-dotted border-black rounded-md border-2 px-4 pt-1 pb-2 mx-2 sm:text-xl text-xs font-semibold text-center flex items-center hover:scale-105 duration-200' onClick={() => handelremove(index)}><span className='text-center  mr-2 text-2xl text-red-600 '><RiDeleteBin6Line /></span>حذف </button>
-                                            <button className='border-dotted border-black rounded-md border-2 px-4 pt-1 pb-2 mx-2 sm:text-xl text-xs font-semibold text-center flex items-center hover:scale-105 duration-200' onClick={() => { setShowBTN(true); handleModalOpen(index, itemArray.txt);ChangeIndexMultiple(index) }}><span className='text-center  mr-2 text-2xl '><IoMdEye /></span>نمایش </button>
-
+                                            <button className='border-dotted border-black rounded-md border-2 px-4 pt-1 pb-2 mx-2 sm:text-xl text-xs font-semibold text-center flex items-center hover:scale-105 duration-200' onClick={() => handelremove(index)}><span className='text-center  mr-2 text-2xl text-red-600 '><RiDeleteBin6Line /></span>حذف </button>
+                                            <button className='border-dotted border-black rounded-md border-2 px-4 pt-1 pb-2 mx-2 sm:text-xl text-xs font-semibold text-center flex items-center hover:scale-105 duration-200' onClick={() => { setShowBTN(true); handleModalOpen(index, itemArray.txt); ChangeIndexMultiple(index) }}><span className='text-center  mr-2 text-2xl text-blue-600 '><IoMdEye /></span>نمایش </button>
+                                            <button className='border-dotted border-black rounded-md border-2 px-4 pt-1 pb-2 mx-2 sm:text-xl text-xs font-semibold text-center flex items-center hover:scale-105 duration-200' onClick={() => handelDownloadWord(index)}><span className='text-center  mr-2 text-LG text-green-600 '><FaDownload /></span> WORD دانلود</button>
                                         </div>
                                     </div>
                                 </div>
@@ -118,7 +171,7 @@ export default function Multipel() {
                                         >
                                             <div key={i} className="flex h-full">
                                                 <div dir='rtl' className="w-1/2 overflow-x-auto max-h-[80vh] p-2">
-                                                    <div className={`grid grid-cols-1 gap-1 md:grid-cols-2 xl:grid-cols-${Math.ceil(itemArray.length-1 / 2)}`}>
+                                                    <div className={`grid grid-cols-1 gap-1 md:grid-cols-2 xl:grid-cols-${Math.ceil(itemArray.length - 1 / 2)}`}>
                                                         {itemArray.map((detail, index) => (
                                                             <div key={index} className="relative">
                                                                 <img

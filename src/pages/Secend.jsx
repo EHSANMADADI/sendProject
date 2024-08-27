@@ -12,10 +12,11 @@ export default function Secend() {
   const [response, setResponse] = useState(null);
   const [error, setError] = useState(null);
   const [selectedItem, setSelectedItem] = useState(null);
-  const { showQuestion, setShowQuestion } = useStore();
   const [answer, setAnswer] = useState("")
   const txt = localStorage.getItem('txt');
   // console.log(typeof(txt));////string
+  // const txt=``
+ 
   useEffect(() => {
     if (!txt) {
       setError('No text provided in the query parameters.');

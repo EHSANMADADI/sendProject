@@ -17,10 +17,10 @@ export default function MultipleNER() {
     const [answer, setAnswer] = useState("")
     const { indexMultiple } = useStore();
     console.log(indexMultiple);
-
+   
     useEffect(() => {
-        async function getSavedItems() {
-            const storedItems = await localforage.getItem('multiSeavedItems');
+         function getSavedItems() {
+            const storedItems = localStorage.getItem('multiSeavedItems');
             const items = JSON.parse(storedItems) || [];
             setSaveItems(items);
             console.log(items); // [[{}]]

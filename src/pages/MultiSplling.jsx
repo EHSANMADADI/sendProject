@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
-import localforage from 'localforage';
+
 import useStore from '../Store/store.ts';
 import Question from '../componenet/Question.jsx';
 import SelectModel from '../componenet/SelectModel.jsx';
@@ -15,8 +15,8 @@ export default function MultiSplling() {
   const { indexMultiple } = useStore();
 
   useEffect(() => {
-    async function getSavedItems() {
-        const storedItems = await localforage.getItem('multiSeavedItems');
+     function getSavedItems() {
+        const storedItems =  localStorage.getItem('multiSeavedItems');
         const items = JSON.parse(storedItems) || [];
         setSaveItems(items);
         console.log(items); // [[{}]]

@@ -4,7 +4,7 @@ import UploadMultipleFiles from "./UploadMultipleFiles"
 
 export default function InputMultiple({ files, setFiles, error, setError }) {
    
-    const MAX_FILE_SIZE = 10485760; // 10MB
+    const MAX_FILE_SIZE = 104857600; // 10MB
 
     const handleFileChange = (event) => {
         const selectedFiles = Array.from(event.target.files);
@@ -12,7 +12,7 @@ export default function InputMultiple({ files, setFiles, error, setError }) {
         let hasError = false;
 
         selectedFiles.forEach((file) => {
-            if (file.type === 'image/jpeg' || file.type === 'image/jpg' || file.type === 'image/png') {
+            // if (file.type === 'image/jpeg' || file.type === 'image/jpg' || file.type === 'image/png') {
                 if (file.size <= MAX_FILE_SIZE) {
                     validFiles.push(file);
                 } else {
@@ -20,11 +20,11 @@ export default function InputMultiple({ files, setFiles, error, setError }) {
                     alert('File size must be less than 10MB');
                     hasError = true;
                 }
-            } else {
-                setError('Only JPG or PNG files are allowed');
-                alert('Only JPG or PNG files are allowed');
-                hasError = true;
-            }
+            // } else {
+            //     setError('Only JPG or PNG files are allowed');
+            //     alert('Only JPG or PNG files are allowed');
+            //     hasError = true;
+            // }
         });
 
         if (!hasError) {
