@@ -4,10 +4,11 @@ import localforage from 'localforage';
 import useStore from '../Store/store.ts';
 import Question from '../componenet/Question.jsx';
 import SelectModel from '../componenet/SelectModel.jsx';
-import loader from'../images/loader.gif'
-import  BackYoHome from '../componenet/BackYoHome.jsx'
+import loader from '../images/loader.gif'
+import BackYoHome from '../componenet/BackYoHome.jsx'
+import { Type } from 'docx';
 export default function MultiSplling() {
-    const [response, setResponse] = useState(null);
+  const [response, setResponse] = useState(null);
   const [error, setError] = useState(null);
   const [answer, setAnswer] = useState("")
   const [fullText, setFullText] = useState('');
@@ -16,40 +17,46 @@ export default function MultiSplling() {
 
   useEffect(() => {
     function getSavedItems() {
-        localforage.getItem('multiSeavedItems')
-            .then(items => {
-                const parsedItems = items || [];
-                setSaveItems(parsedItems);
-                console.log(parsedItems); // [[{}]]
+      try {
+        const items = localStorage.getItem('multiSeavedItems');
+        const parsedItems = items ? JSON.parse(items) : [];
+        setSaveItems(parsedItems);
+        console.log(parsedItems); // [[{}]]
 
-                // بررسی اینکه آیا آرایه دارای عنصری در indexMultiple هست
-                if (parsedItems.length > indexMultiple) {
-                    const selectedItem = parsedItems[indexMultiple];
+        // بررسی اینکه آیا آرایه دارای عنصری در indexMultiple هست
+        if (parsedItems.length > indexMultiple) {
+          const selectedItem = parsedItems[indexMultiple];
 
-                    // دریافت responseText برای هر عنصر و اضافه کردن آن به fullText
-                    const newText = selectedItem.map(item => item.responseText + '\n' + '\n').join('\n');
-                    setFullText(newText); // فقط یک بار مقدار جدید را تنظیم کنید
-                }
-            })
-            .catch(err => {
-                console.error('Error retrieving items from localForage:', err);
-            });
+          // دریافت responseText برای هر عنصر و اضافه کردن آن به fullText
+          const newText = selectedItem.map(item => item.responseText).join('');
+          setFullText(newText); // فقط یک بار مقدار جدید را تنظیم کنید
+        }
+      } catch (err) {
+        console.error('Error retrieving items from localStorage:', err);
+      }
     }
+
     getSavedItems();
-}, [indexMultiple]);
+  }, []);
+
+
+  useEffect(() => {
+    if (fullText !== '') {
 
 
 
-useEffect(() => {
-    if (fullText) {
+
       const fetchData = async () => {
+        console.log(typeof (fullText));
+        console.log(fullText)
         try {
-          const res = await fetch('http://195.191.45.56:17010/spell_correction', {
+          const res = await fetch('http://195.191.45.56:17010/spellcheck', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ text: fullText })
+            // body: JSON.stringify({ sentence: fullText })
+            body: JSON.stringify({ sentence: fullText })
           });
           if (!res.ok) {
             Swal.fire({
@@ -58,8 +65,8 @@ useEffect(() => {
             });
             throw new Error(`HTTP error! status: ${res.status}`);
           }
-  
           const data = await res.json();
+          console.log(data);
           setResponse(data);
           console.log(res);
         } catch (error) {
@@ -67,21 +74,28 @@ useEffect(() => {
           setError('Error fetching data.');
         }
       };
-  
+
       fetchData();
     }
   }, [fullText]);
-  
+
+
+
 
   const parseText = (text) => {
-    const regex = /\(([^)]+)\)/g;
+    const regex = /\^([^^]+)\^/g;
     return text.split(regex).map((part, index) => {
       if (index % 2 === 1) {
         return <span key={index} className="bg-green-700 text-white px-2 py-1 mx-1 rounded-2xl inline-block">{part}</span>;
       }
       return part;
     });
-  };
+  }
+
+
+
+
+
 
   return (
     <div className='h-screen'>
@@ -92,9 +106,9 @@ useEffect(() => {
               <h4 className='text-xl font-bold py-4 ' >متن مورد نظر</h4>
               <div className='bg-white border-dotted border-2 border-gray-200 rounded-2xl leading-10 font-semibold text-lg max-h-72 overflow-y-scroll'>
                 <div className='w-2/3 mx-auto text-center py-2'>
-                  
-                 {parseText(response.corrected_text)}
-                  
+
+                  {parseText(response.corrected_text)}
+
                 </div>
               </div>
               <div className='border-b-4 my-5'></div>
@@ -103,7 +117,7 @@ useEffect(() => {
                 <h4 className='text-xl font-bold py-4 ' >پاسخ پرسش</h4>
                 <div className='bg-white border-dotted border-2 border-gray-200 rounded-2xl leading-10 font-semibold text-lg h-72 overflow-y-scroll'>
                   <div className='w-2/3 mx-auto  py-2'>
-                  {answer === '' && <span className='text-gray-300 text-lg p-4'>پاسخ پرسش شما...</span>}
+                    {answer === '' && <span className='text-gray-300 text-lg p-4'>پاسخ پرسش شما...</span>}
                     {
                       answer != '' && <p className='text-gray-800 text-lg p-2E'>{answer}</p>
                     }
@@ -118,12 +132,12 @@ useEffect(() => {
 
           </div>
           <div className='flex flex-col p-5 w-1/3 text-center justify-center'>
-            <SelectModel/>
+            <SelectModel />
             <BackYoHome path='multiple' />
           </div>
 
 
-  
+
         </div>
 
       ) : (
