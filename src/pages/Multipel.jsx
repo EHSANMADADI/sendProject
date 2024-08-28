@@ -25,29 +25,29 @@ export default function Multipel() {
 
     useEffect(() => {
         if (allFilesUploaded && !hasSaved.current) {
-            localforage.setItem('multiSeavedItems', saveItems)
-                .then(() => {
-                    console.log('Items saved successfully');
-                    hasSaved.current = true;
-                    window.location.reload();
-                })
-                .catch(err => console.error('Error saving items:', err));
+            try {
+                localStorage.setItem('multiSeavedItems', JSON.stringify(saveItems));
+                console.log('Items saved successfully');
+                hasSaved.current = true;
+                window.location.reload();
+            } catch (err) {
+                console.error('Error saving items:', err);
+            }
         }
     }, [allFilesUploaded, saveItems]);
-
-
-
-
+    
     useEffect(() => {
         function getSavedItems() {
-            localforage.getItem('multiSeavedItems')
-                .then(storedItems => {
-                    setSaveItems(storedItems || []);
-                })
-                .catch(err => console.error('Error retrieving items:', err));
+            try {
+                const storedItems = JSON.parse(localStorage.getItem('multiSeavedItems'));
+                setSaveItems(storedItems || []);
+            } catch (err) {
+                console.error('Error retrieving items:', err);
+            }
         }
         getSavedItems();
     }, []);
+    
     
 
     const { setShowBTN, ChangeIndexMultiple } = useStore();
@@ -58,18 +58,18 @@ export default function Multipel() {
         const updatedItems = saveItems.filter((_, i) => i !== id);
         setSaveItems(updatedItems);
     
-        // به‌روزرسانی مقادیر در localForage
-        localforage.setItem('multiSeavedItems', updatedItems)
-            .then(() => {
-                Swal.fire({
-                    title: "فایل با موفقیت حذف شد",
-                    icon: "success"
-                });
-            })
-            .catch(error => {
-                console.error("Error updating localForage: ", error);
+        // به‌روزرسانی مقادیر در localStorage
+        try {
+            localStorage.setItem('multiSeavedItems', JSON.stringify(updatedItems));
+            Swal.fire({
+                title: "فایل با موفقیت حذف شد",
+                icon: "success"
             });
+        } catch (error) {
+            console.error("Error updating localStorage: ", error);
+        }
     };
+    
     
 
 

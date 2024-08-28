@@ -12,15 +12,15 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<FerstPage />} />
-        <Route path="extract" element={<Secend />} />
+        <Route path="/" element={<Multipel />} />
+        {/* <Route path="extract" element={<Secend />} />
         <Route path="semantic" element={<Semantic />} />
-        <Route path="spelling" element={<Spelling />} />
-        <Route path="multiple" element={<Multipel/>}/>
-        <Route path="multiple/extract" element={<MultipleNER/>}/>
-        <Route path="multiple/semantic" element={<MultiSemantic/>}/>
-        <Route path="*" element={< FerstPage />} />
-        <Route path="multiple/spelling" element={<MultiSplling/>}/>
+        <Route path="spelling" element={<Spelling />} /> */}
+        {/* <Route path="multiple" element={<Multipel/>}/> */}
+        <Route path="extract" element={<MultipleNER/>}/>
+        <Route path="semantic" element={<MultiSemantic/>}/>
+        <Route path="*" element={< Multipel />} />
+        <Route path="spelling" element={<MultiSplling/>}/>
 
 
       </Routes>

@@ -20,27 +20,27 @@ export default function MultipleNER() {
    
     useEffect(() => {
         function getSavedItems() {
-            localforage.getItem('multiSeavedItems')
-                .then(items => {
-                    const parsedItems = items || [];
-                    setSaveItems(parsedItems);
-                    console.log(parsedItems); // [[{}]]
+            try {
+                const items = localStorage.getItem('multiSeavedItems');
+                const parsedItems = items ? JSON.parse(items) : [];
+                setSaveItems(parsedItems);
+                console.log(parsedItems); // [[{}]]
     
-                    // بررسی اینکه آیا آرایه دارای عنصری در indexMultiple هست
-                    if (parsedItems.length > indexMultiple) {
-                        const selectedItem = parsedItems[indexMultiple];
+                // بررسی اینکه آیا آرایه دارای عنصری در indexMultiple هست
+                if (parsedItems.length > indexMultiple) {
+                    const selectedItem = parsedItems[indexMultiple];
     
-                        // دریافت responseText برای هر عنصر و اضافه کردن آن به fullText
-                        const newText = selectedItem.map(item => item.responseText + '\n' + '\n').join('\n');
-                        setFullText(newText); // فقط یک بار مقدار جدید را تنظیم کنید
-                    }
-                })
-                .catch(err => {
-                    console.error('Error retrieving items from localForage:', err);
-                });
+                    // دریافت responseText برای هر عنصر و اضافه کردن آن به fullText
+                    const newText = selectedItem.map(item => item.responseText + '\n' + '\n').join('\n');
+                    setFullText(newText); // فقط یک بار مقدار جدید را تنظیم کنید
+                }
+            } catch (err) {
+                console.error('Error retrieving items from localStorage:', err);
+            }
         }
+    
         getSavedItems();
-    }, [indexMultiple]);
+    }, []);
     
     
 
