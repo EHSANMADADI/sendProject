@@ -1,0 +1,57 @@
+/* برای Webkit browsers (مثل Chrome و Safari) */
+.scrollbar-thin::-webkit-scrollbar {
+    width: 8px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: #c0c0c0;
+    border-radius: 9999px;
+    /* این باعث گرد شدن اسکرولبار می‌شود */
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+    background-color: #f0f0f0;
+    border-radius: 9999px;
+}
+
+/* برای Firefox */
+.scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: #c0c0c0 #f0f0f0;
+}
+
+@font-face {
+    font-family: 'BYekan';
+    src: url('./Font/Yekan.ttf') format('ttf');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    font-family: 'BYekan', sans-serif;
+}
+
+/* ///////////////////// */
+.ner-box {
+    direction: rtl;
+    font-size: 18px !important;
+    line-height: 20px !important;
+    margin: 15px 0;
+    padding: 10px;
+    text-align: justify;
+    color: #333;
+}
+.token, .token span {
+    display: inline-block !important;
+    padding: 2px;
+    margin: 2px 0;
+}
+.token.token-ner {
+    background-color: #f6cd61;
+    font-weight: bold;
+    color: #000;
+}
+.token.token-ner .ner-label {
+    color: #9a1f40;
+    margin: 0px 2px;
+}
