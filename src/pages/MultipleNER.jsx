@@ -8,6 +8,7 @@ import loader from '../images/loader.gif';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
 import  BackYoHome from '../componenet/BackYoHome.jsx'
+import { toast } from 'react-toastify';
 export default function MultipleNER() {
     const [response, setResponse] = useState(null);
     const [error, setError] = useState(null);
@@ -17,7 +18,7 @@ export default function MultipleNER() {
     const [answer, setAnswer] = useState("")
     const { indexMultiple } = useStore();
     console.log(indexMultiple);
-   
+
     useEffect(() => {
         function getSavedItems() {
             try {
@@ -37,8 +38,7 @@ export default function MultipleNER() {
             } catch (err) {
                 console.error('Error retrieving items from localStorage:', err);
             }
-        }
-    
+        }    
         getSavedItems();
     }, []);
     
@@ -71,6 +71,17 @@ export default function MultipleNER() {
             } catch (error) {
                 console.error('Error fetching data:', error);
                 setError('Error fetching data.');
+                toast.error('مشکلی پیش آمده لطفا دوباره تلاش کنید', {
+                    position: "bottom-left",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "colored",
+                    
+                  });
             }
         };
         fetchData();
