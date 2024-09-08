@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
-import localforage from 'localforage';
 import useStore from '../Store/store.ts';
 import Question from '../componenet/Question.jsx';
 import SelectModel from '../componenet/SelectModel.jsx';
@@ -16,6 +15,10 @@ export default function MultiSplling() {
   const { indexMultiple } = useStore();
   const [text, setText] = useState('');
   const [parsedText, setParsedText] = useState([]);
+  const [editingIndex, setEditingIndex] = useState(null);
+  const [editingText, setEditingText] = useState('');
+  const [hoveredWord, setHoveredWord] = useState(null);
+  const [isSelecting, setIsSelecting] = useState(false);
 
   useEffect(() => {
     function getSavedItems() {
@@ -73,43 +76,70 @@ export default function MultiSplling() {
 
   const parseText = (text) => {
     const parts = [];
-    let regex = /(\S+)\s*\^([^^]+)\^/g;
+    // تغییر الگو برای جستجوی کلمات بین ™ و ™
+    let regex = /(\S+)\s*™([^\u2122]+)™/g;
     let match;
     let lastIndex = 0;
 
     while ((match = regex.exec(text)) !== null) {
-      if (match.index > lastIndex) {
-        parts.push({ type: 'text', content: text.slice(lastIndex, match.index) });
-      }
-      parts.push({
-        type: 'hover',
-        word: match[1].trim(),
-        alternatives: match[2].split(',').map((alt) => alt.trim())
-      });
-      lastIndex = regex.lastIndex;
+        if (match.index > lastIndex) {
+            parts.push({ type: 'text', content: text.slice(lastIndex, match.index) });
+        }
+        parts.push({
+            type: 'hover',
+            word: match[1].trim(),
+            alternatives: match[2].split(',').map((alt) => alt.trim())
+        });
+        lastIndex = regex.lastIndex;
     }
 
     if (lastIndex < text.length) {
-      parts.push({ type: 'text', content: text.slice(lastIndex) });
+        parts.push({ type: 'text', content: text.slice(lastIndex) });
     }
 
     return parts;
-  };
+};
 
-  const [hoveredWord, setHoveredWord] = useState(null);
-  const [isSelecting, setIsSelecting] = useState(false);
+  
+
   const replaceWord = (originalWord, selectedAlternative) => {
-    const regex = new RegExp(originalWord, 'gi'); // جایگزینی ساده بدون استفاده از \b برای آزمایش
+    const regex = new RegExp(originalWord, 'gi');
     const newText = text.replace(regex, selectedAlternative);
     console.log("New Text:", newText);
     setText(newText);
-  
+
     const newParsedText = parseText(newText);
     setParsedText(newParsedText);
     setIsSelecting(false);
     setHoveredWord(null);
+    setEditingIndex(null);
+    setEditingText('');
   };
+
+  const handleEditingBlur = () => {
+    if (editingIndex !== null && editingText !== '') {
+      const newParsedText = [...parsedText];
   
+      // بررسی اینکه آیا کلمه انتخاب شده از نوع 'text' است
+      if (newParsedText[editingIndex].type === 'text') {
+        // فقط محتوای آن کلمه را تغییر دهید
+        newParsedText[editingIndex] = { type: 'text', content: editingText };
+      } else if (newParsedText[editingIndex].type === 'hover') {
+        // اگر کلمه از نوع hover است، کلمه اصلی را به‌روز کنید
+        newParsedText[editingIndex] = { ...newParsedText[editingIndex], word: editingText };
+      }
+  
+      // ساختن مجدد متن با دقت
+      const updatedText = newParsedText.map(part => part.content || part.word).join('');
+  
+      setText(updatedText);
+      setParsedText(newParsedText);
+      
+      // پاکسازی وضعیت ویرایش
+      setEditingIndex(null);
+      setEditingText('');
+    }
+  };
   
 
   return (
@@ -123,53 +153,94 @@ export default function MultiSplling() {
                 <div>
                   {parsedText.map((part, index) => {
                     if (part.type === 'text') {
-                      return <span key={index}>{part.content}</span>;
+                      return (
+                        <React.Fragment key={index}>
+                          {editingIndex === index ? (
+                            <input
+                              type="text"
+                              value={editingText}
+                              onChange={(e) => setEditingText(e.target.value)}
+                              onBlur={handleEditingBlur}
+                              autoFocus
+                              style={{ border: 'none', outline: 'none', background: 'transparent'}}
+                            />
+                          ) : (
+                            <span
+                              onClick={() => {
+                                if (editingIndex === null) {
+                                  setEditingIndex(index);
+                                  setEditingText(part.content);
+                                }
+                              }}
+                            >
+                              {part.content+' '}
+                            </span>
+                          )}
+                        </React.Fragment>
+                      );
                     }
 
                     if (part.type === 'hover') {
                       return (
-                        <span key={index} style={{ position: 'relative', display: 'inline-block' }}>
-                          <span
-                            onMouseEnter={() => setHoveredWord(part.word)}
-                            onMouseLeave={() => !isSelecting && setHoveredWord(null)}
-                            style={{ textDecoration: 'underline', cursor: 'pointer', color: 'blue' }}
-                          >
-                            {part.word}
-                          </span>
-                          {hoveredWord === part.word && (
-                            <div
-                              style={{
-                                position: 'absolute',
-                                backgroundColor: 'lightgray',
-                                padding: '5px',
-                                borderRadius: '5px',
-                                top: '100%',
-                                left: '0',
-                                zIndex: 10,
-                                opacity: 1,
-                                transform: 'translateY(0)',
-                                transition: 'opacity 0.3s ease, transform 0.3s ease',
-                              }}
-                              onMouseEnter={() => setIsSelecting(true)}
-                              onMouseLeave={() => {
-                                setIsSelecting(false);
-                                setHoveredWord(null);
-                              }}
-                            >
-                              {part.alternatives.map((alt, altIndex) => (
+                        <React.Fragment key={index}>
+                          {editingIndex === index ? (
+                            <input
+                              type="text"
+                              value={editingText}
+                              onChange={(e) => setEditingText(e.target.value)}
+                              onBlur={handleEditingBlur}
+                              autoFocus
+                              style={{ border: 'none', outline: 'none', background: 'transparent' }}
+                            />
+                          ) : (
+                            <span style={{ position: 'relative', display: 'inline-block' }}>
+                              <span
+                                onMouseEnter={() => setHoveredWord(part.word)}
+                                onMouseLeave={() => !isSelecting && setHoveredWord(null)}
+                                style={{ textDecoration: 'underline', cursor: 'pointer', color: 'blue' }}
+                                onClick={() => {
+                                  setEditingIndex(index);
+                                  setEditingText(part.word);
+                                }}
+                              >
+                                {part.word}
+                              </span>
+                              {hoveredWord === part.word && (
                                 <div
-                                  key={altIndex}
-                                  onClick={() => replaceWord(part.word, alt)}
-                                  style={{ cursor: 'pointer', padding: '2px 5px', borderRadius: '3px', backgroundColor: 'white', margin: '2px 0' }}
-                                  onMouseEnter={(e) => (e.target.style.backgroundColor = '#e0e0e0')}
-                                  onMouseLeave={(e) => (e.target.style.backgroundColor = 'white')}
+                                  style={{
+                                    position: 'absolute',
+                                    backgroundColor: 'lightgray',
+                                    padding: '5px',
+                                    borderRadius: '5px',
+                                    top: '100%',
+                                    left: '0',
+                                    zIndex: 10,
+                                    opacity: 1,
+                                    transform: 'translateY(0)',
+                                    transition: 'opacity 0.3s ease, transform 0.3s ease',
+                                  }}
+                                  onMouseEnter={() => setIsSelecting(true)}
+                                  onMouseLeave={() => {
+                                    setIsSelecting(false);
+                                    setHoveredWord(null);
+                                  }}
                                 >
-                                  {alt}
+                                  {part.alternatives.map((alt, altIndex) => (
+                                    <div
+                                      key={altIndex}
+                                      onClick={() => replaceWord(part.word, alt)}
+                                      style={{ cursor: 'pointer', padding: '2px 5px', borderRadius: '3px', backgroundColor: 'white', margin: '2px 0' }}
+                                      onMouseEnter={(e) => (e.target.style.backgroundColor = '#e0e0e0')}
+                                      onMouseLeave={(e) => (e.target.style.backgroundColor = 'white')}
+                                    >
+                                      {alt}
+                                    </div>
+                                  ))}
                                 </div>
-                              ))}
-                            </div>
+                              )}
+                            </span>
                           )}
-                        </span>
+                        </React.Fragment>
                       );
                     }
 
