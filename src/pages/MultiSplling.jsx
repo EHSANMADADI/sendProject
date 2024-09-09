@@ -81,7 +81,7 @@ export default function MultiSplling() {
     let regex = /(\S+)\s*™([^\u2122]+)™/g;
     let match;
     let lastIndex = 0;
-  
+
     while ((match = regex.exec(text)) !== null) {
       if (match.index > lastIndex) {
         const textPart = text.slice(lastIndex, match.index).trim();
@@ -102,7 +102,7 @@ export default function MultiSplling() {
       });
       lastIndex = regex.lastIndex;
     }
-  
+
     // Add the remaining text after the last match
     if (lastIndex < text.length) {
       const textPart = text.slice(lastIndex).trim();
@@ -114,17 +114,19 @@ export default function MultiSplling() {
         });
       }
     }
-  
+
     console.log(parts);
     return parts;
   };
-  
+
 
   const replaceWord = (originalWord, selectedAlternative) => {
     const regex = new RegExp(originalWord, 'gi');
     const newText = text.replace(regex, selectedAlternative);
     console.log("New Text:", newText);
+
     setText(newText);
+    console.log('REPLACE WORD:', newText);
 
     const newParsedText = parseText(newText);
     setParsedText(newParsedText);
@@ -137,7 +139,7 @@ export default function MultiSplling() {
   const handleEditingBlur = () => {
     if (editingIndex !== null && editingText !== '') {
       const newParsedText = [...parsedText];
-  
+
       // بررسی اینکه آیا کلمه انتخاب شده از نوع 'text' است
       if (newParsedText[editingIndex].type === 'text') {
         // فقط محتوای آن کلمه را تغییر دهید
@@ -146,19 +148,22 @@ export default function MultiSplling() {
         // اگر کلمه از نوع hover است، کلمه اصلی را به‌روز کنید
         newParsedText[editingIndex] = { ...newParsedText[editingIndex], word: editingText };
       }
-  
+
       // ساختن مجدد متن با دقت
-      const updatedText = newParsedText.map(part => part.content || part.word).join(' ');
-  
-      setText(updatedText);
+      // const updatedText = newParsedText.map(part => part.content || part.word).join(' ');
+      // console.log("EDIT:", updatedText);
+
+      // setText(updatedText);
       setParsedText(newParsedText);
+      console.log("EDIT NEW PARSEtEXT",newParsedText);
       
+
       // پاکسازی وضعیت ویرایش
       setEditingIndex(null);
       setEditingText('');
     }
   };
-  
+
 
 
   return (
@@ -181,7 +186,7 @@ export default function MultiSplling() {
                               onChange={(e) => setEditingText(e.target.value)}
                               onBlur={handleEditingBlur}
                               autoFocus
-                              style={{ border: 'none', outline: 'none', background: 'transparent'}}
+                              style={{ border: 'none', outline: 'none', background: 'transparent' }}
                             />
                           ) : (
                             <span
@@ -192,7 +197,7 @@ export default function MultiSplling() {
                                 }
                               }}
                             >
-                              {part.content+' '}
+                              {part.content + ' '}
                             </span>
                           )}
                         </React.Fragment>
