@@ -148,7 +148,7 @@ export default function MultiSplling() {
       }
   
       // ساختن مجدد متن با دقت
-      const updatedText = newParsedText.map(part => part.content || part.word).join('');
+      const updatedText = newParsedText.map(part => part.content || part.word).join(' ');
   
       setText(updatedText);
       setParsedText(newParsedText);
