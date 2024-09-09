@@ -1,3 +1,5 @@
+
+
 import React, { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import useStore from '../Store/store.ts';
@@ -79,14 +81,20 @@ export default function MultiSplling() {
     let regex = /(\S+)\s*™([^\u2122]+)™/g;
     let match;
     let lastIndex = 0;
-
+  
     while ((match = regex.exec(text)) !== null) {
       if (match.index > lastIndex) {
         const textPart = text.slice(lastIndex, match.index).trim();
         if (textPart) {
-          parts.push({ type: 'text', content: textPart.split(' ') });
+          // Split the text part into individual words and add each as a separate object
+          textPart.split(' ').forEach(word => {
+            if (word) {
+              parts.push({ type: 'text', content: word });
+            }
+          });
         }
       }
+      // Add the hover word and its alternatives
       parts.push({
         type: 'hover',
         word: match[1].trim(),
@@ -94,22 +102,23 @@ export default function MultiSplling() {
       });
       lastIndex = regex.lastIndex;
     }
-
+  
+    // Add the remaining text after the last match
     if (lastIndex < text.length) {
       const textPart = text.slice(lastIndex).trim();
       if (textPart) {
-        parts.push({ type: 'text', content: textPart.split(' ') });
+        textPart.split(' ').forEach(word => {
+          if (word) {
+            parts.push({ type: 'text', content: word });
+          }
+        });
       }
     }
-
+  
     console.log(parts);
     return parts;
   };
-
-
-
-
-
+  
 
   const replaceWord = (originalWord, selectedAlternative) => {
     const regex = new RegExp(originalWord, 'gi');
@@ -128,44 +137,28 @@ export default function MultiSplling() {
   const handleEditingBlur = () => {
     if (editingIndex !== null && editingText !== '') {
       const newParsedText = [...parsedText];
-
-
+  
+      // بررسی اینکه آیا کلمه انتخاب شده از نوع 'text' است
       if (newParsedText[editingIndex].type === 'text') {
-        // ایجاد یک کپی از آرایه content که شامل کلمات است
-        const updatedContent = [...newParsedText[editingIndex].content];
-
-        // بررسی ایندکس کلمه‌ای که ویرایش شده است
-        const wordIndex = updatedContent.findIndex(word => word === parsedText[editingIndex].content[0]);
-
-        // اگر کلمه پیدا شد، آن را با کلمه جدید جایگزین کنید
-        if (wordIndex !== -1) {
-          updatedContent[wordIndex] = editingText; // جایگزینی کلمه در ایندکس صحیح
-        }
-
-        // به‌روزرسانی content
-        newParsedText[editingIndex].content = updatedContent;
+        // فقط محتوای آن کلمه را تغییر دهید
+        newParsedText[editingIndex] = { type: 'text', content: editingText };
       } else if (newParsedText[editingIndex].type === 'hover') {
-        // اگر نوع کلمه 'hover' است، کلمه ویرایش‌شده را جایگزین می‌کنیم
-        newParsedText[editingIndex].word = editingText;
+        // اگر کلمه از نوع hover است، کلمه اصلی را به‌روز کنید
+        newParsedText[editingIndex] = { ...newParsedText[editingIndex], word: editingText };
       }
-
-      setParsedText(newParsedText);
-
-      // بازسازی متن اصلی
-      const updatedText = newParsedText.map(part => {
-        if (part.type === 'text') {
-          return part.content.join(' '); // اتصال کلمات با فاصله
-        }
-        return part.word; // برای کلمات hover، همان کلمه اصلی را باز می‌گرداند
-      }).join(' '); // بازسازی متن با فاصله‌های مناسب
-
+  
+      // ساختن مجدد متن با دقت
+      const updatedText = newParsedText.map(part => part.content || part.word).join('');
+  
       setText(updatedText);
+      setParsedText(newParsedText);
+      
+      // پاکسازی وضعیت ویرایش
       setEditingIndex(null);
       setEditingText('');
     }
   };
-
-
+  
 
 
   return (
@@ -179,9 +172,6 @@ export default function MultiSplling() {
                 <div>
                   {parsedText.map((part, index) => {
                     if (part.type === 'text') {
-                      // Ensure part.content is an array
-                      const contentArray = Array.isArray(part.content) ? part.content : part.content.split(' ');
-
                       return (
                         <React.Fragment key={index}>
                           {editingIndex === index ? (
@@ -191,25 +181,19 @@ export default function MultiSplling() {
                               onChange={(e) => setEditingText(e.target.value)}
                               onBlur={handleEditingBlur}
                               autoFocus
-                              style={{ border: 'none', outline: 'none', background: 'transparent' }}
+                              style={{ border: 'none', outline: 'none', background: 'transparent'}}
                             />
                           ) : (
-                            contentArray.map((word, wordIndex) => (
-                              <React.Fragment key={wordIndex}>
-                                <span
-                                  onClick={() => {
-                                    if (editingIndex === null) {
-                                      setEditingIndex(index);
-                                      setEditingText(word);
-                                    }
-                                  }}
-                                >
-                                  {word}
-                                </span>
-                                {/* Adding space between words */}
-                                {wordIndex < contentArray.length - 1 && ' '}
-                              </React.Fragment>
-                            ))
+                            <span
+                              onClick={() => {
+                                if (editingIndex === null) {
+                                  setEditingIndex(index);
+                                  setEditingText(part.content);
+                                }
+                              }}
+                            >
+                              {part.content+' '}
+                            </span>
                           )}
                         </React.Fragment>
                       );
@@ -281,8 +265,6 @@ export default function MultiSplling() {
 
                     return null;
                   })}
-
-
                 </div>
               </div>
               <div className='border-b-4 my-5'></div>
