@@ -119,7 +119,6 @@ export default function MultiSplling() {
     return parts;
   };
 
-
   const replaceWord = (originalWord, selectedAlternative) => {
     const regex = new RegExp(originalWord, 'gi');
     const newText = text.replace(regex, selectedAlternative);
@@ -148,22 +147,14 @@ export default function MultiSplling() {
         // اگر کلمه از نوع hover است، کلمه اصلی را به‌روز کنید
         newParsedText[editingIndex] = { ...newParsedText[editingIndex], word: editingText };
       }
-
-      // ساختن مجدد متن با دقت
-      // const updatedText = newParsedText.map(part => part.content || part.word).join(' ');
-      // console.log("EDIT:", updatedText);
-
-      // setText(updatedText);
       setParsedText(newParsedText);
-      console.log("EDIT NEW PARSEtEXT",newParsedText);
-      
+      console.log("EDIT NEW PARSEtEXT", newParsedText);
 
       // پاکسازی وضعیت ویرایش
       setEditingIndex(null);
       setEditingText('');
     }
   };
-
 
 
   return (
@@ -173,7 +164,7 @@ export default function MultiSplling() {
           <div className='flex flex-col bg-gray-100 rounded-2xl w-2/3 mr-3'>
             <div className='p-5 mr-10'>
               <h4 className='text-xl font-bold py-4'>متن مورد نظر</h4>
-              <div className='bg-white border-dotted border-2 border-gray-200 rounded-2xl leading-10 font-semibold text-lg max-h-80 overflow-auto p-5'>
+              <div className='bg-white border-dotted border-2 border-gray-200 rounded-2xl leading-10 font-semibold text-lg max-h-80 overflow-y-auto p-5'>
                 <div>
                   {parsedText.map((part, index) => {
                     if (part.type === 'text') {
@@ -181,12 +172,12 @@ export default function MultiSplling() {
                         <React.Fragment key={index}>
                           {editingIndex === index ? (
                             <input
+                              className='w-20 border-none outline-none bg-slate-200'
                               type="text"
                               value={editingText}
                               onChange={(e) => setEditingText(e.target.value)}
                               onBlur={handleEditingBlur}
                               autoFocus
-                              style={{ border: 'none', outline: 'none', background: 'transparent' }}
                             />
                           ) : (
                             <span
@@ -206,64 +197,52 @@ export default function MultiSplling() {
 
                     if (part.type === 'hover') {
                       return (
-                        <React.Fragment key={index}>
-                          {editingIndex === index ? (
-                            <input
-                              type="text"
-                              value={editingText}
-                              onChange={(e) => setEditingText(e.target.value)}
-                              onBlur={handleEditingBlur}
-                              autoFocus
-                              style={{ border: 'none', outline: 'none', background: 'transparent' }}
-                            />
-                          ) : (
-                            <span style={{ position: 'relative', display: 'inline-block' }}>
+                        <React.Fragment key={index} >
+                          <div className='relative inline-block'>
+                            {editingIndex === index ? (
+                              <input
+                                className='w-20 border-none outline-none bg-slate-200'
+                                type="text"
+                                value={editingText}
+                                onChange={(e) => setEditingText(e.target.value)}
+                                onBlur={handleEditingBlur}
+                                autoFocus
+                              />
+                            ) : (
                               <span
+                                className="cursor-pointer text-blue-600 underline px-1 inline relative hoverable-word"
                                 onMouseEnter={() => setHoveredWord(part.word)}
-                                onMouseLeave={() => !isSelecting && setHoveredWord(null)}
-                                style={{ textDecoration: 'underline', cursor: 'pointer', color: 'blue' }}
                                 onClick={() => {
                                   setEditingIndex(index);
                                   setEditingText(part.word);
                                 }}
                               >
-                                {part.word}
+                                {part.word + ' '}
                               </span>
-                              {hoveredWord === part.word && (
-                                <div
-                                  style={{
-                                    position: 'absolute',
-                                    backgroundColor: 'lightgray',
-                                    padding: '5px',
-                                    borderRadius: '5px',
-                                    top: '100%',
-                                    left: '0',
-                                    zIndex: 10,
-                                    opacity: 1,
-                                    transform: 'translateY(0)',
-                                    transition: 'opacity 0.3s ease, transform 0.3s ease',
-                                  }}
-                                  onMouseEnter={() => setIsSelecting(true)}
-                                  onMouseLeave={() => {
-                                    setIsSelecting(false);
-                                    setHoveredWord(null);
-                                  }}
-                                >
-                                  {part.alternatives.map((alt, altIndex) => (
-                                    <div
-                                      key={altIndex}
-                                      onClick={() => replaceWord(part.word, alt)}
-                                      style={{ cursor: 'pointer', padding: '2px 5px', borderRadius: '3px', backgroundColor: 'white', margin: '2px 0' }}
-                                      onMouseEnter={(e) => (e.target.style.backgroundColor = '#e0e0e0')}
-                                      onMouseLeave={(e) => (e.target.style.backgroundColor = 'white')}
-                                    >
-                                      {alt}
-                                    </div>
-                                  ))}
-                                </div>
-                              )}
-                            </span>
-                          )}
+                            )}
+
+                            {hoveredWord === part.word && (
+                              <div
+                                className="hover-alternatives"
+                                onMouseEnter={() => setIsSelecting(true)}
+                                onMouseLeave={() => {
+                                  setIsSelecting(false);
+                                  setHoveredWord(null);
+                                }}
+                              >
+                                {part.alternatives.map((alt, altIndex) => (
+                                  <div
+                                    key={altIndex}
+                                    className="cursor-pointer p-1 rounded-md bg-white my-1 hover:bg-gray-300"
+                                    onClick={() => replaceWord(part.word, alt)}
+                                  >
+                                    {alt}
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+
                         </React.Fragment>
                       );
                     }
