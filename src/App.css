@@ -57,7 +57,7 @@ body {
 }
 
 
-/* ////// */
+/* ////// spiling word */ 
 .hoverable-word {
     position: relative;
   }
@@ -72,7 +72,7 @@ body {
     white-space: nowrap;
     z-index: 10;
     transform: translateY(10px);
-    transition: opacity 0.2s ease, transform 0.2s ease;
+    transition: opacity 2s ease, transform 2s ease;
   }
   
   .hoverable-word:hover .hover-alternatives {
@@ -80,4 +80,31 @@ body {
     opacity: 1;
     transform: translateY(0);
   }
-  
+  /* ///// login styles */
+  .clippath{
+    width: 100%;
+    height: 100%;
+    clip-path: polygon(0 0, 100% 0, 100% 75%, 0 100%, 0 100%);
+    background-image: url('../src/images/login.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    overflow: visible;
+  }
+  .clippathChangePasssword{
+    width: 100%;
+    height: 100%;
+    clip-path: polygon(0 0, 100% 0, 100% 75%, 0 100%, 0 100%);
+    background-image: url('../src/images/changePassword.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    overflow: visible;
+  }
+  .white-div {
+    position: absolute; /* برای اینکه دایو سفید بتواند از محدوده clip-path بیرون بیاید */
+    z-index: 50; /* اطمینان از قرارگیری روی لایه بالاتر */
+    top: 50%; /* یا مقدار مناسب دیگر برای تنظیم موقعیت */
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }

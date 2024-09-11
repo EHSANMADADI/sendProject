@@ -8,11 +8,13 @@ import Multipel from './pages/Multipel';
 import MultipleNER from './pages/MultipleNER';
 import MultiSemantic from './pages/MultiSemantic';
 import MultiSplling from './pages/MultiSplling';
+import Login from './pages/Login';
+import ChangePassword from './pages/ChangePassword';
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Multipel />} />
+        <Route path="/" element={<Login/>} />
         {/* <Route path="extract" element={<Secend />} />
         <Route path="semantic" element={<Semantic />} />
         <Route path="spelling" element={<Spelling />} /> */}
@@ -21,6 +23,7 @@ function App() {
         <Route path="semantic" element={<MultiSemantic/>}/>
         <Route path="*" element={< Multipel />} />
         <Route path="spelling" element={<MultiSplling/>}/>
+        <Route path='change' element={<ChangePassword/>} />
 
 
       </Routes>

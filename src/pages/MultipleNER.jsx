@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import localforage from 'localforage';
 import useStore from '../Store/store.ts';
 import EntitiesTable from'../componenet/EntitiesTable.jsx';
 import Question from '../componenet/Question.jsx';
