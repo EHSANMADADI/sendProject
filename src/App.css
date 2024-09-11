@@ -83,7 +83,7 @@ body {
   /* ///// login styles */
   .clippath{
     width: 100%;
-    height: 100%;
+    height: 450px;
     clip-path: polygon(0 0, 100% 0, 100% 75%, 0 100%, 0 100%);
     background-image: url('../src/images/login.png');
     background-repeat: no-repeat;
@@ -93,7 +93,7 @@ body {
   }
   .clippathChangePasssword{
     width: 100%;
-    height: 100%;
+    height: 450px;
     clip-path: polygon(0 0, 100% 0, 100% 75%, 0 100%, 0 100%);
     background-image: url('../src/images/changePassword.png');
     background-repeat: no-repeat;
@@ -101,10 +101,4 @@ body {
     background-position: center;
     overflow: visible;
   }
-  .white-div {
-    position: absolute; /* برای اینکه دایو سفید بتواند از محدوده clip-path بیرون بیاید */
-    z-index: 50; /* اطمینان از قرارگیری روی لایه بالاتر */
-    top: 50%; /* یا مقدار مناسب دیگر برای تنظیم موقعیت */
-    left: 50%;
-    transform: translate(-50%, -50%);
-  }
+  

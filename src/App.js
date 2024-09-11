@@ -19,10 +19,10 @@ function App() {
         <Route path="semantic" element={<Semantic />} />
         <Route path="spelling" element={<Spelling />} /> */}
         {/* <Route path="multiple" element={<Multipel/>}/> */}
-        <Route path="extract" element={<MultipleNER/>}/>
+        <Route path="Multipel/extract" element={<MultipleNER/>}/>
         <Route path="semantic" element={<MultiSemantic/>}/>
-        <Route path="*" element={< Multipel />} />
-        <Route path="spelling" element={<MultiSplling/>}/>
+        <Route path="Multipel" element={< Multipel />} />
+        <Route path="Multipel/spelling" element={<MultiSplling/>}/>
         <Route path='change' element={<ChangePassword/>} />
 
 
