@@ -269,7 +269,7 @@ export default function MultiSplling() {
           </div>
           <div className='flex flex-col p-5 w-1/3 text-center justify-center'>
             <SelectModel />
-            <BackYoHome path='multiple' />
+            <BackYoHome path='Multipel' />
           </div>
         </div>
       ) : (

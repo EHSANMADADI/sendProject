@@ -139,7 +139,7 @@ export default function MultipleNER() {
                     </div>
                     <div className='flex flex-col p-5 w-1/3 text-center justify-start mt-10'>
                         <SelectModel />
-                        <BackYoHome path='multiple' />
+                        <BackYoHome path='Multipel' />
                     </div>
 
 

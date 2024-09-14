@@ -8,6 +8,7 @@ export default function Question({setAnswer,fullText}) {
   const {selectedModel } = useStore();
   const txt = fullText;
 
+
   
   const [question, setQuestion] = useState('');
   const [Loading, setLoading] = useState(false);
