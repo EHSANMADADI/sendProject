@@ -120,20 +120,26 @@ export default function MultiSplling() {
   };
 
   const replaceWord = (originalWord, selectedAlternative) => {
-    const regex = new RegExp(originalWord, 'gi');
-    const newText = text.replace(regex, selectedAlternative);
-    console.log("New Text:", newText);
-
-    setText(newText);
-    console.log('REPLACE WORD:', newText);
-
-    const newParsedText = parseText(newText);
+    const newParsedText = parsedText.map((part) => {
+      if (part.type === 'hover' && part.word === originalWord) {
+        return { ...part, word: selectedAlternative }; // Replace the word in hover type
+      }
+      return part; // Return other parts unchanged
+    });
+  
+    // Update both text and parsedText based on the new structure
+    const updatedText = newParsedText.map(part => part.type === 'text' ? part.content : part.word).join(' ');
+    
+    setText(updatedText);
     setParsedText(newParsedText);
+    
     setIsSelecting(false);
     setHoveredWord(null);
     setEditingIndex(null);
     setEditingText('');
   };
+  
+
 
   const handleEditingBlur = () => {
     if (editingIndex !== null && editingText !== '') {
@@ -147,9 +153,14 @@ export default function MultiSplling() {
         // اگر کلمه از نوع hover است، کلمه اصلی را به‌روز کنید
         newParsedText[editingIndex] = { ...newParsedText[editingIndex], word: editingText };
       }
+      ////////////////
+      const updatedText = newParsedText.map(part => part.type === 'text' ? part.content : part.word).join(' ');
+      setText(updatedText);
+      console.log('new text edited: ', updatedText);
+      /////////////////////
+
       setParsedText(newParsedText);
       console.log("EDIT NEW PARSEtEXT", newParsedText);
-
       // پاکسازی وضعیت ویرایش
       setEditingIndex(null);
       setEditingText('');
@@ -246,7 +257,6 @@ export default function MultiSplling() {
                         </React.Fragment>
                       );
                     }
-
                     return null;
                   })}
                 </div>
@@ -264,7 +274,7 @@ export default function MultiSplling() {
               </div>
             </div>
             <div className='w-full mr-10 p-5'>
-              <Question setAnswer={setAnswer} fullText={fullText} />
+              <Question setAnswer={setAnswer} fullText={text} />
             </div>
           </div>
           <div className='flex flex-col p-5 w-1/3 text-center justify-center'>

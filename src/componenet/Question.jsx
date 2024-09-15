@@ -1,19 +1,38 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import useStore from '../Store/store.ts';
 import { FiSend } from "react-icons/fi";
 import CircleLoader from "react-spinners/CircleLoader";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-export default function Question({setAnswer,fullText}) {
-  const {selectedModel } = useStore();
-  const txt = fullText;
+export default function Question({ setAnswer, fullText }) {
+  const { selectedModel } = useStore();
+  const [txt, setTxt] = useState();
 
 
+
+  // this function created to fix text and delet aditianal careacter => "TM"
+  useEffect(() => {
+    // تابع برای حذف کلمات بین ™™
+    const cleanText = (text) => {
+      // استفاده از Regex برای شناسایی کلمات بین ™™
+      const regex = /™[^™]+™/g;
+      return text.replace(regex, '').trim(); // حذف کلمات بین ™™ و تریم کردن متن
+    };
   
+    // فراخوانی تابع و تنظیم متن اصلاح‌شده
+    const cleanedText = cleanText(fullText);
+    console.log( "qouestion::::::>",cleanedText);
+    
+    setTxt(cleanedText); // به‌روزرسانی state با متن اصلاح‌شده
+  
+  },[fullText]); // این useEffect زمانی اجرا می‌شود که متن تغییر کند
+
+
+
   const [question, setQuestion] = useState('');
   const [Loading, setLoading] = useState(false);
   const controllerRef = useRef(null); // UseRef برای نگه‌داشتن AbortController
-   
+
 
   const fetchLLMAya = async () => {
     console.log(Loading);
@@ -43,7 +62,7 @@ export default function Question({setAnswer,fullText}) {
         draggable: true,
         progress: undefined,
         theme: "colored",
-        
+
       });
       if (error.name === 'AbortError') {
         console.log('Request aborted');
@@ -56,8 +75,8 @@ export default function Question({setAnswer,fullText}) {
           draggable: true,
           progress: undefined,
           theme: "light",
-          
-          });
+
+        });
       } else {
         console.error('Error fetching LLM Aya data:', error);
       }
@@ -94,8 +113,8 @@ export default function Question({setAnswer,fullText}) {
           draggable: true,
           progress: undefined,
           theme: "light",
-        
-          });
+
+        });
       } else {
         toast.error('مشکلی پیش آمده لطفا دوباره تلاش کنید', {
           position: "bottom-left",
@@ -106,90 +125,90 @@ export default function Question({setAnswer,fullText}) {
           draggable: true,
           progress: undefined,
           theme: "colored",
-          
+
         });
-      
+
       }
     }
   }
 
   const questionAya = async () => {
     console.log(question);
-   
-      try {
-        const res = await fetch('http://195.191.45.56:17010/chat', {
-          method: 'POST',
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ message: question }),
-          signal: controllerRef.current.signal, // سیگنال برای قطع درخواست
+
+    try {
+      const res = await fetch('http://195.191.45.56:17010/chat', {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ message: question }),
+        signal: controllerRef.current.signal, // سیگنال برای قطع درخواست
+      });
+
+      console.log(res);
+      const data = await res.json()
+      console.log(data.response);
+      setAnswer(data.response);
+      setLoading(false);
+    }
+    catch (error) {
+      setLoading(false);
+      if (error.name === 'AbortError') {
+        console.log('Request aborted');
+        toast.info('عملیات متوقف شد', {
+          position: "bottom-left",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+
         });
-        
-        console.log(res);
-        const data=await res.json()
-        console.log(data.response);
-        setAnswer(data.response);
-        setLoading(false);
+      } else {
+        console.error('Error:', error);
       }
-      catch (error) {
-        setLoading(false);
-        if (error.name === 'AbortError') {
-          console.log('Request aborted');
-          toast.info('عملیات متوقف شد', {
-            position: "bottom-left",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-          
-            });
-        } else {
-          console.error('Error:', error);
-        }
-      } 
+    }
   }
 
   const questionDorna = async () => {
-    console.log(question+'dorna');
-      try {
-        console.log(question);
-        const res = await fetch('http://195.191.45.56:17010/chat_dorna', {
-          method: 'POST',
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ message: question }),
-          signal: controllerRef.current.signal, // سیگنال برای قطع درخواست
+    console.log(question + 'dorna');
+    try {
+      console.log(question);
+      const res = await fetch('http://195.191.45.56:17010/chat_dorna', {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ message: question }),
+        signal: controllerRef.current.signal, // سیگنال برای قطع درخواست
+      });
+      console.log(res);
+      const data = await res.json()
+      console.log(data.response);
+      setAnswer(data.response)
+      setLoading(false);
+
+    } catch (error) {
+      setLoading(false);
+      if (error.name === 'AbortError') {
+        console.log('Request aborted');
+        toast.info('عملیات متوقف شد', {
+          position: "bottom-left",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+
         });
-        console.log(res);
-        const data=await res.json()
-        console.log(data.response);
-        setAnswer(data.response)
-        setLoading(false);
-      
-      } catch (error) {
-        setLoading(false);
-        if (error.name === 'AbortError') {
-          console.log('Request aborted');
-          toast.info('عملیات متوقف شد', {
-            position: "bottom-left",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-            
-            });
-        } else {
-          console.error('Error:', error);
-        }
+      } else {
+        console.error('Error:', error);
       }
+    }
   }
 
   const sendqiestion = async () => {

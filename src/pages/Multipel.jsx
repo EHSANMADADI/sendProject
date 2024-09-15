@@ -11,7 +11,7 @@ import UploadMultipleFiles from '../componenet/UploadMultipleFiles.jsx';
 import { FaDownload } from "react-icons/fa6";
 import { saveAs } from 'file-saver';
 import { Document, Packer, Paragraph, TextRun } from 'docx';
-import localforage from 'localforage';
+
 export default function Multipel() {
     const [files, setFiles] = useState(null);
     const [error, setError] = useState('');
