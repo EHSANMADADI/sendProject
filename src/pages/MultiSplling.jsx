@@ -21,6 +21,30 @@ export default function MultiSplling() {
   const [editingText, setEditingText] = useState('');
   const [hoveredWord, setHoveredWord] = useState(null);
   const [isSelecting, setIsSelecting] = useState(false);
+  //////////////////
+// useEffect(() => {
+//   if (text !== '' && parsedText.length > 0) {
+//     try {
+//       // پاک‌سازی متن و حذف کلمات بین ™™
+//       const cleanedText = cleanText(text);
+      
+//       // ذخیره کردن متن پاک‌سازی شده در localStorage
+//       const savedItems = [...saveItems];
+//       if (indexMultiple < savedItems.length) {
+//         savedItems[indexMultiple] = { responseText: cleanedText };
+//       } else {
+//         savedItems.push({ responseText: cleanedText });
+//       }
+
+//       localStorage.setItem('multiSeavedItems', JSON.stringify(savedItems));
+//     } catch (err) {
+//       console.error('Error saving items to localStorage:', err);
+//     }
+//   }
+// }, [text, indexMultiple, saveItems]);
+
+  
+  ////////////
 
   useEffect(() => {
     function getSavedItems() {
@@ -39,7 +63,6 @@ export default function MultiSplling() {
         console.error('Error retrieving items from localStorage:', err);
       }
     }
-
     getSavedItems();
   }, [indexMultiple]);
 
