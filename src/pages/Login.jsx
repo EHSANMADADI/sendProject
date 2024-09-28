@@ -16,7 +16,7 @@ export default function Login() {
           <div className='w-full overflow-visible   '>
             <div className='clippath absolute'></div>
             <div className='w-full flex items-center justify-center overflow-visible z-50'>
-              <div className='bg-white z-50  p-10 rounded-xl text-center lg:w-1/3 sm:w-1/2 w-full shadow-2xl shadow-black  mt-20  overflow-visible'>
+              <div className='bg-white z-50  p-10 rounded-xl text-center lg:w-1/4 sm:w-1/2 w-full shadow-2xl shadow-black  mt-20  overflow-visible'>
                 <h1 className='text-2xl font-black my-4'>ورود به سامانه</h1>
                 <h6 className='text-gray-500 font-semibold text-base'>سیستم آنلاین تبدیل متن به عکس (ocr)</h6>
                 <form className="flex flex-col items-center w-full my-5">

@@ -21,30 +21,6 @@ export default function MultiSplling() {
   const [editingText, setEditingText] = useState('');
   const [hoveredWord, setHoveredWord] = useState(null);
   const [isSelecting, setIsSelecting] = useState(false);
-  //////////////////
-// useEffect(() => {
-//   if (text !== '' && parsedText.length > 0) {
-//     try {
-//       // پاک‌سازی متن و حذف کلمات بین ™™
-//       const cleanedText = cleanText(text);
-      
-//       // ذخیره کردن متن پاک‌سازی شده در localStorage
-//       const savedItems = [...saveItems];
-//       if (indexMultiple < savedItems.length) {
-//         savedItems[indexMultiple] = { responseText: cleanedText };
-//       } else {
-//         savedItems.push({ responseText: cleanedText });
-//       }
-
-//       localStorage.setItem('multiSeavedItems', JSON.stringify(savedItems));
-//     } catch (err) {
-//       console.error('Error saving items to localStorage:', err);
-//     }
-//   }
-// }, [text, indexMultiple, saveItems]);
-
-  
-  ////////////
 
   useEffect(() => {
     function getSavedItems() {
@@ -55,7 +31,11 @@ export default function MultiSplling() {
 
         if (parsedItems.length > indexMultiple) {
           const selectedItem = parsedItems[indexMultiple];
-          const newText = selectedItem.map(item => item.responseText).join('');
+          let newText = selectedItem.map(item => item.responseText).join('\u200B');///for show new text 
+          // console.log([...newText].map(c => c.charCodeAt(0)));
+
+          newText = newText.replace('/\u2122/g','');  // کد یونیکد برای ™
+
           setFullText(newText);
           setText(newText); // Set initial text state
         }
@@ -64,7 +44,17 @@ export default function MultiSplling() {
       }
     }
     getSavedItems();
-  }, [indexMultiple]);
+    return(()=>{
+      const updatedText = parsedText?.map(part => part.type === 'text' ? part.content : part.word).join(' ');
+      console.log(updatedText);
+      localStorage.setItem('fulltextttt',updatedText);
+    })
+  }, [indexMultiple,parsedText]);
+
+
+
+
+
 
   useEffect(() => {
     if (fullText !== '') {
@@ -137,8 +127,7 @@ export default function MultiSplling() {
         });
       }
     }
-
-    console.log(parts);
+    // console.log(parts);
     return parts;
   };
 
@@ -149,19 +138,19 @@ export default function MultiSplling() {
       }
       return part; // Return other parts unchanged
     });
-  
+
     // Update both text and parsedText based on the new structure
     const updatedText = newParsedText.map(part => part.type === 'text' ? part.content : part.word).join(' ');
-    
+
     setText(updatedText);
     setParsedText(newParsedText);
-    
+
     setIsSelecting(false);
     setHoveredWord(null);
     setEditingIndex(null);
     setEditingText('');
   };
-  
+
 
 
   const handleEditingBlur = () => {
@@ -179,11 +168,11 @@ export default function MultiSplling() {
       ////////////////
       const updatedText = newParsedText.map(part => part.type === 'text' ? part.content : part.word).join(' ');
       setText(updatedText);
-      console.log('new text edited: ', updatedText);
+      // console.log('new text edited: ', updatedText);
       /////////////////////
 
       setParsedText(newParsedText);
-      console.log("EDIT NEW PARSEtEXT", newParsedText);
+      //console.log("EDIT NEW PARSEtEXT", newParsedText);
       // پاکسازی وضعیت ویرایش
       setEditingIndex(null);
       setEditingText('');

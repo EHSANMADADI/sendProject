@@ -21,7 +21,7 @@ export default function Question({ setAnswer, fullText }) {
   
     // فراخوانی تابع و تنظیم متن اصلاح‌شده
     const cleanedText = cleanText(fullText);
-    console.log( "qouestion::::::>",cleanedText);
+   // console.log( "qouestion::::::>",cleanedText);
     
     setTxt(cleanedText); // به‌روزرسانی state با متن اصلاح‌شده
   

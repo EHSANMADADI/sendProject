@@ -177,8 +177,8 @@ export default function Multipel() {
                                             Open={openModals[index]}
                                             onClose={() => handleModalClose(index)}
                                         >
-                                            <div key={i} className="flex h-full">
-                                                <div dir='rtl' className="w-1/2 overflow-x-auto max-h-[80vh] p-2">
+                                            <div key={i} className="flex md:flex-row flex-col h-full">
+                                                <div dir='rtl' className="md:w-1/2 w-full overflow-x-auto max-h-[80vh] p-2">
                                                     <div className={`grid grid-cols-1 gap-1 md:grid-cols-2 xl:grid-cols-${Math.ceil(itemArray.length - 1 / 2)}`}>
                                                         {itemArray.map((detail, index) => (
                                                             <div key={index} className="relative">
@@ -192,11 +192,11 @@ export default function Multipel() {
                                                     </div>
                                                 </div>
 
-                                                <div dir="rtl" className="w-1/2 p-4 bg-gray-50 overflow-auto max-h-[80vh]">
+                                                <div dir="rtl" className="md:w-1/2 w-full md:p-4 p-2 bg-gray-50 overflow-auto max-h-[80vh]">
                                                     <pre className="text-sm font-black">
                                                         {itemArray.map((detail, index) => (
                                                             <div key={index} className="border-b-[3px] border-dashed pb-2">
-                                                                {detail.responseText}
+                                                                <span className='md:text-sm text-xs'>{detail.responseText}</span>
                                                                 <div className="text-left text-sm text-gray-600 mt-1">
                                                                     {`شماره: ${index + 1}`}
                                                                 </div>

@@ -124,8 +124,9 @@ export default function MultipleNER() {
                                     <div className='w-11/12 mx-auto  py-2'>
                                         {answer === '' && <span className='text-gray-300 text-lg p-4'>پاسخ پرسش شما...</span>}
                                         {
-                                            answer != '' && <p className='text-gray-800 text-lg p-2E'>{answer}</p>
+                                            answer !== '' && <p className='text-gray-800 text-lg p-2E'>{answer}</p>
                                         }
+                                        
 
                                     </div>
                                 </div>
