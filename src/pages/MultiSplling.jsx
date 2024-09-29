@@ -28,28 +28,49 @@ export default function MultiSplling() {
         const items = localStorage.getItem('multiSeavedItems');
         const parsedItems = items ? JSON.parse(items) : [];
         setSaveItems(parsedItems);
-
+  
         if (parsedItems.length > indexMultiple) {
           const selectedItem = parsedItems[indexMultiple];
-          let newText = selectedItem.map(item => item.responseText).join('\u200B');///for show new text 
-          // console.log([...newText].map(c => c.charCodeAt(0)));
-
-          newText = newText.replace('/\u2122/g','');  // کد یونیکد برای ™
-
+          let newText = selectedItem.map(item => item.responseText).join('\u200B');
+          newText = newText.replace(/\u2122/g, '');
           setFullText(newText);
-          setText(newText); // Set initial text state
+          setText(newText);
         }
       } catch (err) {
         console.error('Error retrieving items from localStorage:', err);
       }
     }
+  
     getSavedItems();
+  }, [indexMultiple]); // اضافه کردن وابستگی‌های مورد نیاز
+
+
+  useEffect(()=>{
     return(()=>{
-      const updatedText = parsedText?.map(part => part.type === 'text' ? part.content : part.word).join(' ');
-      console.log(updatedText);
-      localStorage.setItem('fulltextttt',updatedText);
+      setParsedText((parsedText) => {
+        const updatedText = parsedText?.map(part => part.type === 'text' ? part.content : part.word).join(' ');
+  
+        const separatedText = updatedText.split('\u200B').map((text) => ({
+          type: 'text',
+          content: text
+        }));
+  
+        const items = [...saveItems];
+        if (items.length > indexMultiple) {
+          items[indexMultiple] = items[indexMultiple].map((item, idx) => ({
+            ...item,
+            responseText: separatedText[idx]?.content.split('™').join(' ') || item.responseText,
+          }));
+          localStorage.setItem('multiSeavedItems', JSON.stringify(items));
+        }
+  
+        return parsedText; // برگرداندن مقادیر به‌روز شده
+      });
     })
-  }, [indexMultiple,parsedText]);
+  })
+  
+  
+  
 
 
 

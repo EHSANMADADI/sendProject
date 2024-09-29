@@ -193,16 +193,16 @@ export default function Multipel() {
                                                 </div>
 
                                                 <div dir="rtl" className="md:w-1/2 w-full md:p-4 p-2 bg-gray-50 overflow-auto max-h-[80vh]">
-                                                    <pre className="text-sm font-black">
+                                                    <p className="text-2xl font-black leading-8">
                                                         {itemArray.map((detail, index) => (
                                                             <div key={index} className="border-b-[3px] border-dashed pb-2">
-                                                                <span className='md:text-sm text-xs'>{detail.responseText}</span>
+                                                                <span className='md:text-base text-xs'>{detail.responseText.split('\u200B').join(' ')}</span>
                                                                 <div className="text-left text-sm text-gray-600 mt-1">
                                                                     {`شماره: ${index + 1}`}
                                                                 </div>
                                                             </div>
                                                         ))}
-                                                    </pre>
+                                                    </p>
                                                 </div>
                                             </div>
                                         </Modal>
