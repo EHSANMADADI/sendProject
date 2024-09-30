@@ -7,21 +7,23 @@ import MultiSplling from './pages/MultiSplling';
 import Login from './pages/Login';
 import ChangePassword from './pages/ChangePassword';
 import NotFound from './pages/NotFound';
+import ListUser from './pages/Admin/ListUser';
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Login/>} />
+        <Route path="/" element={<Login />} />
         {/* <Route path="extract" element={<Secend />} />
         <Route path="semantic" element={<Semantic />} />
         <Route path="spelling" element={<Spelling />} /> */}
         {/* <Route path="multiple" element={<Multipel/>}/> */}
-        <Route path="Multipel/extract" element={<MultipleNER/>}/>
-        <Route path="semantic" element={<MultiSemantic/>}/>
+        <Route path="Multipel/extract" element={<MultipleNER />} />
+        <Route path="semantic" element={<MultiSemantic />} />
         <Route path="Multipel" element={< Multipel />} />
-        <Route path="Multipel/spelling" element={<MultiSplling/>}/>
-        <Route path='changePassword' element={<ChangePassword/>} />
-        <Route path='*' element={<NotFound/>}/>
+        <Route path="Multipel/spelling" element={<MultiSplling />} />
+        <Route path='changePassword' element={<ChangePassword />} />
+        <Route path='Admin/ListUser' element={<ListUser />} />
+        <Route path='*' element={<NotFound />} />
 
 
       </Routes>
