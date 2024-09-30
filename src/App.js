@@ -8,6 +8,7 @@ import Login from './pages/Login';
 import ChangePassword from './pages/ChangePassword';
 import NotFound from './pages/NotFound';
 import ListUser from './pages/Admin/ListUser';
+import AddUsers from './pages/Admin/AddUsers';
 function App() {
   return (
     <BrowserRouter>
@@ -22,7 +23,8 @@ function App() {
         <Route path="Multipel" element={< Multipel />} />
         <Route path="Multipel/spelling" element={<MultiSplling />} />
         <Route path='changePassword' element={<ChangePassword />} />
-        <Route path='Admin/ListUser' element={<ListUser />} />
+        <Route path='ListUser' element={<ListUser />} />
+        <Route path='AddUser' element={<AddUsers />} />
         <Route path='*' element={<NotFound />} />
 
 
