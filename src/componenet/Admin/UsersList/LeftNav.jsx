@@ -5,6 +5,7 @@ import { IoPersonCircle } from "react-icons/io5";
 import { FaChevronDown } from "react-icons/fa";
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 
+
 export default function LeftNav() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -13,10 +14,10 @@ export default function LeftNav() {
 
   // UseEffect to check the route and update the state
   useEffect(() => {
-    if (location.pathname === '/ListUser') {
+    if (location.pathname === '/Admin/ListUser') {
       setActiveList(true);
       setActiveAddUser(false);
-    } else if (location.pathname === '/AddUser') {
+    } else if (location.pathname === '/Admin/AddUser') {
       setActiveAddUser(true);
       setActiveList(false);
     }
@@ -24,27 +25,27 @@ export default function LeftNav() {
 
   return (
     <div className='border-orange-300 h-full w-8/12 mx-auto border-2 rounded-md shadow-inner flex flex-col justify-between'>
-      <div className='flex flex-col justify-around mt-5'>
-        <div className={'flex flex-col items-center justify-center mb-10 ' + (activeList ? 'bg-orange-200' : '')}>
+      <div className='flex flex-col justify-around'>
+        <div className={'flex flex-col items-center justify-center mb-10 pt-5 ' + (activeList ? 'bg-orange-200' : '')}>
           <span className='text-orange-400 md:text-5xl text-3xl cursor-pointer' onClick={() => {
-            navigate('/ListUser');
+            navigate('/Admin/ListUser');
           }}>
             <FaUsers />
           </span>
           <span className='md:text-xl text-base font-bold cursor-pointer' onClick={() => {
-            navigate('/ListUser');
+            navigate('/Admin/ListUser');
           }}>
             لیست کاربران
           </span>
         </div>
-        <div className={'flex flex-col items-center justify-center rounded ' + (activeAddUser ? 'bg-orange-200' : '')}>
+        <div className={'flex flex-col items-center justify-center rounded pt-5 ' + (activeAddUser ? 'bg-orange-200' : '')}>
           <span className='text-orange-400 md:text-5xl text-3xl cursor-pointer' onClick={() => {
-            navigate('/AddUser');
+            navigate('/Admin/AddUser');
           }}>
             <MdGroupAdd />
           </span>
           <span className='md:text-xl text-base font-bold cursor-pointer' onClick={() => {
-            navigate('/AddUser');
+            navigate('/Admin/AddUser');
           }}>
             ایجاد کاربر
           </span>
