@@ -52,7 +52,9 @@ export default function LeftNavUser() {
         </div>
       </div>
       <div>
-        <div className='flex flex-col justify-center items-center mb-4 cursor-pointer '>
+        <div className='flex flex-col justify-center items-center mb-4 cursor-pointer' onClick={()=>{
+          navigate('/Multipel')
+        }}>
           <div>
             <span className='text-orange-400 md:text-5xl text-2xl'>
               <MdLibraryAdd />
