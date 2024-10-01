@@ -3,14 +3,15 @@ import { FaUsers } from "react-icons/fa6";
 import { MdGroupAdd } from "react-icons/md";
 import { IoPersonCircle } from "react-icons/io5";
 import { FaChevronDown } from "react-icons/fa";
+import { CiLogout } from "react-icons/ci";
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-
-
 export default function LeftNav() {
   const navigate = useNavigate();
   const location = useLocation();
   const [activeList, setActiveList] = useState(false);
   const [activeAddUser, setActiveAddUser] = useState(false);
+  const [showLogOut, setShowLogOut] = useState(false);
+
 
   // UseEffect to check the route and update the state
   useEffect(() => {
@@ -53,13 +54,30 @@ export default function LeftNav() {
       </div>
 
       <div className='flex items-center justify-center'>
+        {showLogOut ? (
+          <div onClick={()=>{
+            navigate('/')
+          }} className='flex items-center bg-neutral-100 p-2 rounded cursor-pointer hover:scale-110 duration-200'>
+            <span className='text-red-700 font-extrabold text-2xl mx-1'><CiLogout /></span>
+            <span>خروج</span>
+            
+
+          </div>
+        ) : (null)}
         <span>
           <FaChevronDown />
         </span>
-        <span className='md:text-xl text-base font-bold'>ادمین</span>
-        <span className='text-orange-400 md:text-4xl text-2xl m-2 mb'>
-          <IoPersonCircle />
-        </span>
+        <div className='flex items-center justify-center cursor-pointer' onClick={() => {
+          setShowLogOut(!showLogOut)
+        }}>
+          <span className='md:text-xl text-base font-bold'>ادمین</span>
+          <span className='text-orange-400 md:text-4xl text-2xl m-2 mb'>
+            <IoPersonCircle />
+          </span>
+
+
+        </div>
+
       </div>
     </div>
   );

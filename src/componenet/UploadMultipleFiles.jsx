@@ -20,6 +20,8 @@ export default function UploadMultipleFiles({ keys, files, setSaveItems, saveIte
   const handleUpload = (fileState, index) => {
     const formData = new FormData();
     formData.append('image', fileState.file);
+    console.log(formData);
+    
 
     let imageUrls;
     const reader = new FileReader();

@@ -23,9 +23,9 @@ export default function TabelInfo() {
                                     <tr>
                                         <td className="md:px-6 px-2 py-4 whitespace-nowrap text-sm font-medium text-gray-800 ">1</td>
                                         <td className="md:px-6 px-2 py-4 whitespace-nowrap text-sm text-gray-800 ">nan</td>
-                                        <td className="md:px-6 px-2 py-4 whitespace-nowrap text-2xl text-orange-300 "><TiEye/></td>
-                                        <td className="md:px-6 px-2 py-4 whitespace-nowrap text-2xl text-red-500 "><MdDelete /></td>
-                                        <td className="md:px-6 px-2 py-4 whitespace-nowrap text-2xl text-orange-500 "><FaDownload/></td>
+                                        <td className="md:px-6 px-2 py-4 whitespace-nowrap text-2xl text-orange-300 cursor-pointer hover:scale-110 duration-500   "><TiEye/></td>
+                                        <td className="md:px-6 px-2 py-4 whitespace-nowrap text-2xl text-red-500  cursor-pointer hover:scale-110 duration-500 "><MdDelete /></td>
+                                        <td className="md:px-6 px-2 py-4 whitespace-nowrap text-2xl text-orange-500 cursor-pointer hover:scale-110 duration-500  "><FaDownload/></td>
                                     </tr>
                                 </tbody>
                             </table>

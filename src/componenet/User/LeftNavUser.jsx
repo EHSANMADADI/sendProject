@@ -5,12 +5,14 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { TfiWrite } from "react-icons/tfi";
 import { LuClipboardCheck } from "react-icons/lu";
 import { MdLibraryAdd } from "react-icons/md";
+import { CiLogout } from "react-icons/ci";
 
 export default function LeftNavUser() {
   const navigate = useNavigate();
   const location = useLocation();
   const [activeInfo, setActiveInfo] = useState(false);
   const [activeExtendedFile, setActiveExtendedFile] = useState(false);
+  const [showLogOut, setShowLogOut] = useState(false);
   useEffect(() => {
     if (location.pathname === '/UserPage/ExtractInfoFile') {
       setActiveInfo(true);
@@ -60,14 +62,29 @@ export default function LeftNavUser() {
             شروع پروژه
           </span>
         </div>
-        <div className='flex items-center justify-center'>
-          <span>
-            <FaChevronDown />
-          </span>
-          <span className='md:text-xl text-base font-bold'> نام فرد</span>
-          <span className='text-orange-400 md:text-4xl text-2xl m-2 mb'>
-            <IoPersonCircle />
-          </span>
+        <div className='flex items-center justify-center '>
+          {showLogOut ? (
+            <div onClick={() => {
+              navigate('/')
+            }} className='flex items-center bg-neutral-100 p-2 rounded cursor-pointer hover:scale-110 duration-200 mr-1'>
+              <span className='text-red-700 font-extrabold text-2xl mx-1'><CiLogout /></span>
+              <span>خروج</span>
+
+
+            </div>
+          ) : (null)}
+          <div className='flex items-center cursor-pointer' onClick={()=>{
+            setShowLogOut(!showLogOut)
+          }}>
+            <span>
+              <FaChevronDown />
+            </span>
+            <span className='md:text-xl text-base font-bold'> نام فرد</span>
+            <span className='text-orange-400 md:text-4xl text-2xl m-2 mb'>
+              <IoPersonCircle />
+            </span>
+          </div>
+
         </div>
       </div>
 
