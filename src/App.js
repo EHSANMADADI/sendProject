@@ -9,6 +9,8 @@ import ChangePassword from './pages/ChangePassword';
 import NotFound from './pages/NotFound';
 import ListUser from './pages/Admin/ListUser';
 import AddUsers from './pages/Admin/AddUsers';
+import User from './pages/User/User';
+import ExtendedFilePage from './pages/User/ExtendedFilePage';
 function App() {
   return (
     <BrowserRouter>
@@ -23,8 +25,10 @@ function App() {
         <Route path="Multipel" element={< Multipel />} />
         <Route path="Multipel/spelling" element={<MultiSplling />} />
         <Route path='changePassword' element={<ChangePassword />} />
-        <Route path='ListUser' element={<ListUser />} />
-        <Route path='AddUser' element={<AddUsers />} />
+        <Route path='Admin/ListUser' element={<ListUser />} />
+        <Route path='Admin/AddUser' element={<AddUsers />} />
+        <Route path='UserPage/ExtractInfoFile' element={<User />} />
+        <Route path='UserPage/extendedFile' element={<ExtendedFilePage/>}/>
         <Route path='*' element={<NotFound />} />
 
 
