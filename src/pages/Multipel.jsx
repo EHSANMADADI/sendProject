@@ -11,6 +11,10 @@ import UploadMultipleFiles from '../componenet/UploadMultipleFiles.jsx';
 import { FaDownload } from "react-icons/fa6";
 import { saveAs } from 'file-saver';
 import { Document, Packer, Paragraph, TextRun } from 'docx';
+import { SiMicrosoftexcel } from "react-icons/si";
+import JSZip from 'jszip';
+import axios from 'axios';
+
 
 export default function Multipel() {
     const [files, setFiles] = useState(null);
@@ -21,7 +25,8 @@ export default function Multipel() {
     console.log("multiple files", files);
     const hasSaved = useRef(false);
 
-    
+
+
 
     useEffect(() => {
         if (allFilesUploaded && !hasSaved.current) {
@@ -35,7 +40,7 @@ export default function Multipel() {
             }
         }
     }, [allFilesUploaded, saveItems]);
-    
+
     useEffect(() => {
         function getSavedItems() {
             try {
@@ -47,8 +52,8 @@ export default function Multipel() {
         }
         getSavedItems();
     }, []);
-    
-    
+
+
 
     const { setShowBTN, ChangeIndexMultiple } = useStore();
 
@@ -57,7 +62,7 @@ export default function Multipel() {
     const handelremove = (id) => {
         const updatedItems = saveItems.filter((_, i) => i !== id);
         setSaveItems(updatedItems);
-    
+
         // به‌روزرسانی مقادیر در localStorage
         try {
             localStorage.setItem('multiSeavedItems', JSON.stringify(updatedItems));
@@ -69,8 +74,9 @@ export default function Multipel() {
             console.error("Error updating localStorage: ", error);
         }
     };
-    
-    
+
+
+
 
 
 
@@ -87,9 +93,60 @@ export default function Multipel() {
         setOpenModals(updatedOpenModals);
     };
 
+
+    const handelDownloadExcell = async (index) => {
+        try {
+            const zip = new JSZip(); // ایجاد یک فایل ZIP
+
+            for (let itemIndex = 0; itemIndex < saveItems[index].length; itemIndex++) {
+               
+                const item = saveItems[index][itemIndex];
+                const url_document = item.url_document;
+
+                let isProcessing = true;
+                let excelBlob = null;
+
+                while (isProcessing) {
+                    // ارسال درخواست به API برای دانلود فایل اکسل
+                    const response = await axios.post('http://195.191.45.56:17010/download_excel', { document_url: url_document }, { responseType: 'blob' });
+
+                    if (response.data.state === "processing") {
+                        console.log(response.data.state);
+
+                        // اگر همچنان در حالت پردازش بود، کمی صبر کنید و مجدداً درخواست را ارسال کنید
+                        await new Promise(resolve => setTimeout(resolve, 3000));
+                    } else {
+                        // فایل اکسل دریافت شد
+                        console.log('excel file received');
+
+                        excelBlob = response.data;
+                        isProcessing = false;
+                    }
+                }
+
+                if (excelBlob) {
+                    // اضافه کردن فایل اکسل به فایل ZIP
+                    zip.file(`file_${itemIndex + 1}.xlsx`, excelBlob);
+                }
+            }
+
+            // ایجاد فایل ZIP و دانلود آن
+            const zipBlob = await zip.generateAsync({ type: "blob" });
+            saveAs(zipBlob, "excel_files.zip");
+        }
+        catch (error) {
+            console.error("Error downloading Excel files:", error);
+            Swal.fire({
+                title: "خطا در دانلود فایل اکسل",
+                icon: "error",
+                text: "لطفاً دوباره تلاش کنید."
+            });
+        }
+    }
+
+
     const handelDownloadWord = (index) => {
         var combinedResponseText = ''; // متغیر برای ذخیره تمام responseText ها
-
         saveItems[index].forEach((item) => {
             if (item.responseText) {
                 combinedResponseText += item.responseText;
@@ -166,6 +223,8 @@ export default function Multipel() {
                                             <button className='border-dotted border-black rounded-md border-2 px-4 pt-1 pb-2 mx-2 sm:text-xl text-xs font-semibold text-center flex items-center hover:scale-105 duration-200' onClick={() => handelremove(index)}><span className='text-center  mr-2 text-2xl text-red-600 '><RiDeleteBin6Line /></span>حذف </button>
                                             <button className='border-dotted border-black rounded-md border-2 px-4 pt-1 pb-2 mx-2 sm:text-xl text-xs font-semibold text-center flex items-center hover:scale-105 duration-200' onClick={() => { setShowBTN(true); handleModalOpen(index, itemArray.txt); ChangeIndexMultiple(index) }}><span className='text-center  mr-2 text-2xl text-blue-600 '><IoMdEye /></span>نمایش </button>
                                             <button className='border-dotted border-black rounded-md border-2 px-4 pt-1 pb-2 mx-2 sm:text-xl text-xs font-semibold text-center flex items-center hover:scale-105 duration-200' onClick={() => handelDownloadWord(index)}><span className='text-center  mr-2 text-LG text-green-600 '><FaDownload /></span> WORD دانلود</button>
+                                            <button className='border-dotted border-black rounded-md border-2 px-4 pt-1 pb-2 mx-2 sm:text-xl text-xs font-semibold text-center flex items-center hover:scale-105 duration-200' onClick={() => handelDownloadExcell(index)}><span className='text-center  mr-2 text-LG text-green-600 '><SiMicrosoftexcel /></span> EXCEL دانلود</button>
+
                                         </div>
                                     </div>
                                 </div>

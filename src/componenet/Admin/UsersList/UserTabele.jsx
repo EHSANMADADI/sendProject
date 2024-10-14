@@ -53,8 +53,8 @@ export default function UserTabele() {
                                 <td className="px-6 py-4 border border-gray-300">
                                     ohikl;
                                 </td>
-                                <td className="px-6 py-4 text-orange-400 text-lg flex border border-gray-300">
-                                    <span className='px-auto mx-auto'>
+                                <td className="px-6 py-4 text-orange-400 text-lg  border border-gray-300">
+                                <span className='items-center text-center flex justify-center'>
                                         <FaEdit />
                                     </span>
                                 </td>

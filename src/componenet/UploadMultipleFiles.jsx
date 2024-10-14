@@ -18,6 +18,8 @@ export default function UploadMultipleFiles({ keys, files, setSaveItems, saveIte
   const [progressAll, setProgressAll] = useState(0);
 
   const handleUpload = (fileState, index) => {
+    console.log(fileState);
+    
     const formData = new FormData();
     formData.append('image', fileState.file);
     console.log(formData);
@@ -30,7 +32,7 @@ export default function UploadMultipleFiles({ keys, files, setSaveItems, saveIte
     };
     reader.readAsDataURL(fileState.file);
 
-    axios.post('http://195.191.45.56:17010/process_image', formData, {
+    axios.post('http://195.191.45.56:17010/process_image?type=excel', formData, {
       onUploadProgress: (progressEvent) => {
         const percentage = Math.floor((progressEvent.loaded * 100) / progressEvent.total);
         setFileStates(prevStates => {
@@ -41,6 +43,7 @@ export default function UploadMultipleFiles({ keys, files, setSaveItems, saveIte
       }
     })
     .then(res => {
+      console.log("res form eliaaa=>",res);
       setFileStates(prevStates => {
         const updatedStates = [...prevStates];
         updatedStates[index].isSent = true;

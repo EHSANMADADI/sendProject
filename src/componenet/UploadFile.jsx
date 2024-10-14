@@ -40,6 +40,8 @@ export default function UploadFile({ file, setFile, setSaveItem, saveItem }) {
            
            
             formData.append('image', file);//////Alephba API
+            console.log('FormDATA===>',formData);
+            
             axios.post('http://195.191.45.56:17010/process_image', formData,
                 {
                     onUploadProgress: (progressEvent) => {

@@ -52,7 +52,7 @@ export default function LeftNavUser() {
         </div>
       </div>
       <div>
-        <div className='flex flex-col justify-center items-center mb-4 cursor-pointer' onClick={()=>{
+        <div className='flex flex-col justify-center items-center mb-4 cursor-pointer' onClick={() => {
           navigate('/Multipel')
         }}>
           <div>
@@ -63,6 +63,8 @@ export default function LeftNavUser() {
           <span className='md:text-xl text-base text-center font-black'>
             شروع پروژه
           </span>
+
+          
         </div>
         <div className='flex items-center justify-center '>
           {showLogOut ? (
@@ -75,7 +77,7 @@ export default function LeftNavUser() {
 
             </div>
           ) : (null)}
-          <div className='flex items-center cursor-pointer' onClick={()=>{
+          <div className='flex items-center cursor-pointer' onClick={() => {
             setShowLogOut(!showLogOut)
           }}>
             <span>
