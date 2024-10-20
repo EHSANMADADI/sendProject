@@ -12,7 +12,7 @@ import { FaDownload } from 'react-icons/fa6';
 import { saveAs } from 'file-saver';
 import { Document, Packer, Paragraph, TextRun } from 'docx';
 import { SiMicrosoftexcel } from 'react-icons/si';
-
+import JSZip from 'jszip';
 import axios from 'axios';
 
 export default function Multipel() {
@@ -80,8 +80,11 @@ export default function Multipel() {
         setOpenModals(updatedOpenModals);
     };
 
+    
+    
     const handelDownloadExcell = async (index) => {
         try {
+            const zip = new JSZip(); // ایجاد یک فایل ZIP
             const updatedIsDownloadExcell = [...isDownloadExcell];
             updatedIsDownloadExcell[index] = true; // وضعیت دانلود فعال می‌شود
             setIsDownloadExcell(updatedIsDownloadExcell);
@@ -93,19 +96,24 @@ export default function Multipel() {
                 let isProcessing = true;
                 let excelBlob = null;
     
+                // دریافت فایل اکسل تا زمانی که پردازش تمام شود
                 while (isProcessing) {
                     const response = await axios.post(
                         'http://195.191.45.56:17010/download_excel',
-                        { document_url: url_document },
-                        { responseType: 'blob' }
+                        { document_url: url_document }
                     );
     
                     if (response.data.state === "processing") {
                         console.log(response.data.state);
                         await new Promise((resolve) => setTimeout(resolve, 3000));
                     } else {
+                        const res = await axios.post(
+                            'http://195.191.45.56:17010/download_excel',
+                            { document_url: url_document },
+                            { responseType: 'blob' }
+                        );
                         console.log('excel file received');
-                        excelBlob = response.data;
+                        excelBlob = res.data;
                         isProcessing = false;
                     }
                 }
@@ -113,6 +121,8 @@ export default function Multipel() {
                 if (excelBlob) {
                     const formData = new FormData();
                     formData.append('file', excelBlob, 'uploaded_file.xlsx');
+    
+                    // بارگذاری فایل اکسل به سرور
                     const responseUpload = await axios.post(
                         'https://195.191.45.56:17011/upload',
                         formData,
@@ -128,16 +138,20 @@ export default function Multipel() {
     
                         if (res.status === 200) {
                             const fileUrl = `https://195.191.45.56:17011/download/${res.data.output_file}`;
-                            const downloadLink = document.createElement('a');
-                            downloadLink.href = fileUrl;
-                            downloadLink.download = res.data.output_file; // نام پیش‌فرض فایل دانلودی
-                            document.body.appendChild(downloadLink);
-                            downloadLink.click();
-                            document.body.removeChild(downloadLink);
+                            const fileResponse = await axios.get(fileUrl, { responseType: 'blob' });
+    
+                            // اضافه کردن فایل اکسل به زیپ
+                            const fileName = res.data.output_file; // نام پیش‌فرض فایل دانلودی
+                            zip.file(fileName, fileResponse.data);
                         }
                     }
                 }
             }
+    
+            // ایجاد فایل زیپ و دانلود آن
+            const zipBlob = await zip.generateAsync({ type: 'blob' });
+            saveAs(zipBlob, 'excel_files.zip'); // فایل زیپ دانلود می‌شود
+    
         } catch (error) {
             console.error('Error downloading Excel files:', error);
             Swal.fire({
@@ -152,7 +166,8 @@ export default function Multipel() {
         }
     };
     
-    
+
+
 
     const handelDownloadWord = (index) => {
         var combinedResponseText = '';
@@ -261,8 +276,8 @@ export default function Multipel() {
                                                 <span className='text-center mr-2 text-2xl text-green-700'>
                                                     <SiMicrosoftexcel />
                                                 </span>
-                                                {isDownloadExcell[index]?(<span>صبر کنید</span>):(<span>دانلود اکسل</span>)}
-                                                 
+                                                {isDownloadExcell[index] ? (<span>صبر کنید</span>) : (<span>دانلود اکسل</span>)}
+
                                             </button>
                                             <button
                                                 className='border-dotted border-black rounded-md border-2 px-4 pt-1 pb-2 mx-2 sm:text-xl text-xs font-semibold text-center flex items-center hover:scale-105 duration-200'
