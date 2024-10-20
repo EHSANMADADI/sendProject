@@ -12,7 +12,7 @@ import { FaDownload } from 'react-icons/fa6';
 import { saveAs } from 'file-saver';
 import { Document, Packer, Paragraph, TextRun } from 'docx';
 import { SiMicrosoftexcel } from 'react-icons/si';
-import JSZip from 'jszip';
+
 import axios from 'axios';
 
 export default function Multipel() {
@@ -21,6 +21,7 @@ export default function Multipel() {
     const [openModals, setOpenModals] = useState([]);
     const [saveItems, setSaveItems] = useState([]);
     const [allFilesUploaded, setAllFilesUploaded] = useState(false);
+    const [isDownloadExcell, setIsDownloadExcell] = useState([]);
     console.log("multiple files", files);
     const hasSaved = useRef(false);
 
@@ -81,18 +82,24 @@ export default function Multipel() {
 
     const handelDownloadExcell = async (index) => {
         try {
-            const zip = new JSZip();
-
+            const updatedIsDownloadExcell = [...isDownloadExcell];
+            updatedIsDownloadExcell[index] = true; // وضعیت دانلود فعال می‌شود
+            setIsDownloadExcell(updatedIsDownloadExcell);
+    
             for (let itemIndex = 0; itemIndex < saveItems[index].length; itemIndex++) {
                 const item = saveItems[index][itemIndex];
                 const url_document = item.url_document;
-
+    
                 let isProcessing = true;
                 let excelBlob = null;
-
+    
                 while (isProcessing) {
-                    const response = await axios.post('http://195.191.45.56:17010/download_excel', { document_url: url_document }, { responseType: 'blob' });
-
+                    const response = await axios.post(
+                        'http://195.191.45.56:17010/download_excel',
+                        { document_url: url_document },
+                        { responseType: 'blob' }
+                    );
+    
                     if (response.data.state === "processing") {
                         console.log(response.data.state);
                         await new Promise((resolve) => setTimeout(resolve, 3000));
@@ -102,47 +109,34 @@ export default function Multipel() {
                         isProcessing = false;
                     }
                 }
-
+    
                 if (excelBlob) {
                     const formData = new FormData();
                     formData.append('file', excelBlob, 'uploaded_file.xlsx');
-                    const responseUpload = await axios.post('http://127.0.0.1:5000/upload', formData, {
-                        headers: {
-                            'Content-Type': 'multipart/form-data',
-                        },
-                    });
-                    console.log(responseUpload);
-
+                    const responseUpload = await axios.post(
+                        'https://195.191.45.56:17011/upload',
+                        formData,
+                        { headers: { 'Content-Type': 'multipart/form-data' } }
+                    );
+    
                     if (responseUpload.status === 200) {
-                        const res = await axios.post('http://127.0.0.1:5000/extract', {
-                            file_path: responseUpload.data.file_path
-                        }, {
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                        })
-
-                        console.log(res);
-
-                        if(res.status === 200) {
-                            const fileUrl = `http://127.0.0.1:5000/download/${res.data.output_file}`; // The URL of the Excel file
+                        const res = await axios.post(
+                            'https://195.191.45.56:17011/extract',
+                            { file_path: responseUpload.data.file_path },
+                            { headers: { 'Content-Type': 'application/json' } }
+                        );
+    
+                        if (res.status === 200) {
+                            const fileUrl = `https://195.191.45.56:17011/download/${res.data.output_file}`;
                             const downloadLink = document.createElement('a');
                             downloadLink.href = fileUrl;
-                            downloadLink.download = res.data.output_file; // Specify the default name for the downloaded file
+                            downloadLink.download = res.data.output_file; // نام پیش‌فرض فایل دانلودی
                             document.body.appendChild(downloadLink);
-                            downloadLink.click(); // Trigger the download
-                            document.body.removeChild(downloadLink); 
+                            downloadLink.click();
+                            document.body.removeChild(downloadLink);
                         }
-                        
-                        
                     }
-
-
-
-
                 }
-
-              
             }
         } catch (error) {
             console.error('Error downloading Excel files:', error);
@@ -151,8 +145,14 @@ export default function Multipel() {
                 icon: 'error',
                 text: 'لطفاً دوباره تلاش کنید.',
             });
+        } finally {
+            const updatedIsDownloadExcell = [...isDownloadExcell];
+            updatedIsDownloadExcell[index] = false; // وضعیت دکمه را ریست می‌کنیم
+            setIsDownloadExcell(updatedIsDownloadExcell);
         }
     };
+    
+    
 
     const handelDownloadWord = (index) => {
         var combinedResponseText = '';
@@ -246,7 +246,7 @@ export default function Multipel() {
                                             </button>
                                             <button
                                                 className='border-dotted border-black rounded-md border-2 px-4 pt-1 pb-2 mx-2 sm:text-xl text-xs font-semibold text-center flex items-center hover:scale-105 duration-200'
-                                                onClick={() => handleModalOpen(index, 'Sample Text')}
+                                                onClick={() => { setShowBTN(true); handleModalOpen(index, itemArray.responseText); ChangeIndexMultiple(index) }}
                                             >
                                                 <span className='text-center mr-2 text-2xl text-blue-600'>
                                                     <IoMdEye />
@@ -256,11 +256,13 @@ export default function Multipel() {
                                             <button
                                                 className='border-dotted border-black rounded-md border-2 px-4 pt-1 pb-2 mx-2 sm:text-xl text-xs font-semibold text-center flex items-center hover:scale-105 duration-200'
                                                 onClick={() => handelDownloadExcell(index)}
+                                                disabled={isDownloadExcell[index]}
                                             >
                                                 <span className='text-center mr-2 text-2xl text-green-700'>
                                                     <SiMicrosoftexcel />
                                                 </span>
-                                                دانلود اکسل
+                                                {isDownloadExcell[index]?(<span>صبر کنید</span>):(<span>دانلود اکسل</span>)}
+                                                 
                                             </button>
                                             <button
                                                 className='border-dotted border-black rounded-md border-2 px-4 pt-1 pb-2 mx-2 sm:text-xl text-xs font-semibold text-center flex items-center hover:scale-105 duration-200'
@@ -273,10 +275,49 @@ export default function Multipel() {
                                             </button>
                                         </div>
                                     </div>
-                                    <Modal isOpen={openModals[index]} onClose={() => handleModalClose(index)} title='نتیجه پردازش'>
-                                        <textarea className='p-4 w-full h-96' value={saveItems[index].responseText || ''} readOnly />
-                                    </Modal>
                                 </div>
+
+
+                                {
+                                    itemArray.map((file, i) => (
+                                        <Modal
+                                            key={i}
+                                            Open={openModals[index]}
+                                            onClose={() => handleModalClose(index)}
+                                        >
+                                            <div key={i} className="flex md:flex-row flex-col h-full">
+                                                <div dir='rtl' className="md:w-1/2 w-full overflow-x-auto max-h-[80vh] p-2">
+                                                    <div className={`grid grid-cols-1 gap-1 md:grid-cols-2 xl:grid-cols-${Math.ceil(itemArray.length - 1 / 2)}`}>
+                                                        {itemArray.map((detail, index) => (
+                                                            <div key={index} className="relative">
+                                                                <img
+                                                                    className="w-full h-auto  object-cover rounded-lg"
+                                                                    src={detail.src}
+                                                                    alt={`detail-${index}`}
+                                                                />
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                </div>
+
+                                                <div dir="rtl" className="md:w-1/2 w-full md:p-4 p-2 bg-gray-50 overflow-auto max-h-[80vh]">
+                                                    <p className="text-2xl font-black leading-8">
+                                                        {itemArray.map((detail, index) => (
+                                                            <div key={index} className="border-b-[3px] border-dashed pb-2">
+                                                                <span className='md:text-base text-xs'>{detail.responseText.split('\u200B').join(' ')}</span>
+                                                                <div className="text-left text-sm text-gray-600 mt-1">
+                                                                    {`شماره: ${index + 1}`}
+                                                                </div>
+                                                            </div>
+                                                        ))}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </Modal>
+                                    ))
+                                }
+
+
                             </div>
                         ))}
                 </div>
