@@ -15,7 +15,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Login />} />
+        <Route path="/" element={<Multipel />} />
         {/* <Route path="extract" element={<Secend />} />
         <Route path="semantic" element={<Semantic />} />
         <Route path="spelling" element={<Spelling />} /> */}
@@ -24,11 +24,11 @@ function App() {
         <Route path="semantic" element={<MultiSemantic />} />
         <Route path="Multipel" element={< Multipel />} />
         <Route path="Multipel/spelling" element={<MultiSplling />} />
-        <Route path='changePassword' element={<ChangePassword />} />
+        {/* <Route path='changePassword' element={<ChangePassword />} />
         <Route path='Admin/ListUser' element={<ListUser />} />
         <Route path='Admin/AddUser' element={<AddUsers />} />
         <Route path='UserPage/ExtractInfoFile' element={<User />} />
-        <Route path='UserPage/extendedFile' element={<ExtendedFilePage/>}/>
+        <Route path='UserPage/extendedFile' element={<ExtendedFilePage/>}/> */}
         <Route path='*' element={<NotFound />} />
 
 

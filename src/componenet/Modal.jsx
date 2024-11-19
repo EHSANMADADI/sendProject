@@ -10,7 +10,6 @@ export default function Modal({ Open, onClose, children }) {
 
   const Handelclose = (e) => {
     if (e.target.id === 'wrapper') onClose();
-
   }
 
   return (
@@ -23,20 +22,17 @@ export default function Modal({ Open, onClose, children }) {
           </div>
           {
             showBTN && <div className='flex justify-around mt-5'>
-              <Link to={'extract'} className='px-5 py-2 bg-orange-400 rounded-md  text-white font-semibold hover:scale-75 duration-300'>استخراج موجودیت ها
+              <Link to={'/Multipel/extract'} className='px-5 py-2 bg-orange-400 rounded-md  text-white font-semibold hover:scale-75 duration-300'>استخراج موجودیت ها
               </Link>
               {/* <Link to={'semantic'}
 
                 className='px-5 py-2 bg-yellow-500 rounded-md mx-5 text-white font-semibold hover:scale-75 duration-300'> بهبود معنایی
               </Link> */}
-              <Link to={'spelling'} className='px-5 py-2 bg-amber-600 rounded-md  text-white font-semibold hover:scale-75 duration-300'> بهبود متن
+              <Link to={'/Multipel/spelling'} className='px-5 py-2 bg-amber-600 rounded-md  text-white font-semibold hover:scale-75 duration-300'> بهبود متن
               </Link>
 
             </div>
           }
-
-
-
         </div>
       </div>
     </div>
