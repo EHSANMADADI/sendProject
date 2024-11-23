@@ -14,6 +14,7 @@ import { Document, Packer, Paragraph, TextRun } from 'docx';
 import { SiMicrosoftexcel } from 'react-icons/si';
 import JSZip from 'jszip';
 import axios from 'axios';
+import { FaRegFilePdf } from "react-icons/fa";
 
 export default function Multipel() {
     const [files, setFiles] = useState(null);
@@ -166,6 +167,10 @@ export default function Multipel() {
         }
     };
 
+    const handelDownloadPdf= (index)=>{
+        
+    }
+
 
 
 
@@ -276,7 +281,18 @@ export default function Multipel() {
                                                 <span className='text-center mr-2 text-2xl text-green-700'>
                                                     <SiMicrosoftexcel />
                                                 </span>
-                                                {isDownloadExcell[index] ? (<span>صبر کنید</span>) : (<span>دانلود اکسل</span>)}
+                                                {isDownloadExcell[index] ? (<span className='text-sm'>صبر کنید</span>) : (<span>اکسل</span>)}
+
+                                            </button>
+                                            <button
+                                                className='border-dotted border-black rounded-md border-2 md:px-4 px-2 pt-1 pb-2 mx-2 sm:text-xl text-xs font-semibold text-center flex items-center hover:scale-105 duration-200'
+                                                onClick={() => handelDownloadPdf(index)}
+                                                disabled={isDownloadExcell[index]}
+                                            >
+                                                <span className='text-center mr-2 text-2xl text-red-700'>
+                                                    <FaRegFilePdf />
+                                                </span>
+                                                {isDownloadExcell[index] ? (<span className='text-sm'>صبر کنید</span>) : (<span>PDF</span>)}
 
                                             </button>
                                             <button
@@ -286,7 +302,7 @@ export default function Multipel() {
                                                 <span className='text-center mr-2 text-2xl text-yellow-600'>
                                                     <FaDownload />
                                                 </span>
-                                                دانلود Word
+                                                 Word
                                             </button>
                                         </div>
                                     </div>
