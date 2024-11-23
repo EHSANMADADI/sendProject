@@ -23,6 +23,8 @@ export default function Multipel() {
     const [saveItems, setSaveItems] = useState([]);
     const [allFilesUploaded, setAllFilesUploaded] = useState(false);
     const [isDownloadExcell, setIsDownloadExcell] = useState([]);
+    const [isDownloadPdf, setIsDownloadPdf] = useState([]);
+    const [isDownloadWord, setIsDownloadWord] = useState([]);
     console.log("multiple files", files);
     const hasSaved = useRef(false);
 
@@ -153,7 +155,8 @@ export default function Multipel() {
             const zipBlob = await zip.generateAsync({ type: 'blob' });
             saveAs(zipBlob, 'excel_files.zip'); // فایل زیپ دانلود می‌شود
 
-        } catch (error) {
+        } 
+        catch (error) {
             console.error('Error downloading Excel files:', error);
             Swal.fire({
                 title: 'خطا در دانلود فایل اکسل',
@@ -167,48 +170,123 @@ export default function Multipel() {
         }
     };
 
-    const handelDownloadPdf= (index)=>{
-        
-    }
-
-
-
-
-    const handelDownloadWord = (index) => {
-        var combinedResponseText = '';
-
-        saveItems[index].forEach((item) => {
-            if (item.responseText) {
-                combinedResponseText += item.responseText;
-            } else {
-                console.warn('responseText is missing for an item at index:', index);
+    const handelDownloadPdf = async (index) => {
+        try {
+            const zip = new JSZip(); // ایجاد یک فایل ZIP
+            const updatedIsDownloadPdf = [...isDownloadPdf];
+            updatedIsDownloadPdf[index] = true; // وضعیت دانلود فعال می‌شود
+            setIsDownloadPdf(updatedIsDownloadPdf);
+    
+            for (let itemIndex = 0; itemIndex < saveItems[index].length; itemIndex++) {
+                const item = saveItems[index][itemIndex];
+                const url_document = item.url_document;
+    
+                let isProcessing = true;
+                let pdfBlob = null;
+    
+                // دریافت فایل PDF تا زمانی که پردازش تمام شود
+                while (isProcessing) {
+                    const response = await axios.post(
+                        'http://195.191.45.56:17010/download_pdf',
+                        { document_url: url_document }
+                    );
+    
+                    if (response.data.state === "processing") {
+                        console.log(response.data.state);
+                        await new Promise((resolve) => setTimeout(resolve, 3000));
+                    } else {
+                        const res = await axios.post(
+                            'http://195.191.45.56:17010/download_pdf',
+                            { document_url: url_document },
+                            { responseType: 'blob' }
+                        );
+                        console.log('PDF file received');
+                        pdfBlob = res.data;
+                        isProcessing = false;
+    
+                        // اضافه کردن فایل به ZIP
+                        const fileName = `file_${itemIndex + 1}.pdf`; // نام فایل
+                        zip.file(fileName, pdfBlob); // اضافه کردن فایل به ZIP
+                    }
+                }
             }
-        });
-
-        if (!combinedResponseText) {
-            console.error('No valid responseText found for index:', index);
-            return;
-        }
-
-        const doc = new Document({
-            sections: [
-                {
-                    children: [
-                        new Paragraph({
-                            children: [new TextRun(combinedResponseText)],
-                        }),
-                    ],
-                },
-            ],
-        });
-
-        Packer.toBlob(doc)
-            .then((blob) => {
-                saveAs(blob, 'Report.docx');
-            })
-            .catch((error) => {
-                console.error('Error while creating or saving the document:', error);
+    
+            // ایجاد فایل زیپ و دانلود آن
+            const zipBlob = await zip.generateAsync({ type: 'blob' });
+            saveAs(zipBlob, 'PDF_files.zip'); // فایل زیپ دانلود می‌شود
+        } catch (error) {
+            console.error('Error downloading PDF files:', error);
+            Swal.fire({
+                title: 'خطا در دانلود فایل PDF',
+                icon: 'error',
+                text: 'لطفاً دوباره تلاش کنید.',
             });
+        } finally {
+            const updatedIsDownloadPdf = [...isDownloadPdf];
+            updatedIsDownloadPdf[index] = false; // وضعیت دکمه را ریست می‌کنیم
+            setIsDownloadPdf(updatedIsDownloadPdf);
+        }
+    };
+    
+
+
+
+    const handelDownloadWord = async (index) => {
+        try {
+            const zip = new JSZip(); // ایجاد یک فایل ZIP
+            const updatedIsDownloadWord = [...isDownloadWord];
+            updatedIsDownloadWord[index] = true; // وضعیت دانلود فعال می‌شود
+            setIsDownloadWord(updatedIsDownloadWord);
+    
+            for (let itemIndex = 0; itemIndex < saveItems[index].length; itemIndex++) {
+                const item = saveItems[index][itemIndex];
+                const url_document = item.url_document;
+    
+                let isProcessing = true;
+                let wordBlob = null;
+    
+                // دریافت فایل PDF تا زمانی که پردازش تمام شود
+                while (isProcessing) {
+                    const response = await axios.post(
+                        'http://195.191.45.56:17010/download_word',
+                        { document_url: url_document }
+                    );
+    
+                    if (response.data.state === "processing") {
+                        console.log(response.data.state);
+                        await new Promise((resolve) => setTimeout(resolve, 3000));
+                    } else {
+                        const res = await axios.post(
+                            'http://195.191.45.56:17010/download_word',
+                            { document_url: url_document },
+                            { responseType: 'blob' }
+                        );
+                        console.log('word file received');
+                        wordBlob = res.data;
+                        isProcessing = false;
+    
+                        // اضافه کردن فایل به ZIP
+                        const fileName = `file_${itemIndex + 1}.doc`; // نام فایل
+                        zip.file(fileName, wordBlob); // اضافه کردن فایل به ZIP
+                    }
+                }
+            }
+    
+            // ایجاد فایل زیپ و دانلود آن
+            const zipBlob = await zip.generateAsync({ type: 'blob' });
+            saveAs(zipBlob, 'WORD_files.zip'); // فایل زیپ دانلود می‌شود
+        } catch (error) {
+            console.error('Error downloading word files:', error);
+            Swal.fire({
+                title: 'خطا در دانلود فایل word',
+                icon: 'error',
+                text: 'لطفاً دوباره تلاش کنید.',
+            });
+        } finally {
+            const updatedIsDownloadWord = [...isDownloadPdf];
+            updatedIsDownloadWord[index] = false; // وضعیت دکمه را ریست می‌کنیم
+            setIsDownloadWord(updatedIsDownloadWord);
+        }
     };
 
     return (
@@ -278,31 +356,32 @@ export default function Multipel() {
                                                 onClick={() => handelDownloadExcell(index)}
                                                 disabled={isDownloadExcell[index]}
                                             >
-                                                <span className='text-center mr-2 text-2xl text-green-700'>
+                                                <span className='text-center mr-2 text-xl text-green-700'>
                                                     <SiMicrosoftexcel />
                                                 </span>
-                                                {isDownloadExcell[index] ? (<span className='text-sm'>صبر کنید</span>) : (<span>اکسل</span>)}
+                                                {isDownloadExcell[index] ? (<span className='text-sm'>صبر کنید</span>) : (<span>EXCEL</span>)}
 
                                             </button>
                                             <button
                                                 className='border-dotted border-black rounded-md border-2 md:px-4 px-2 pt-1 pb-2 mx-2 sm:text-xl text-xs font-semibold text-center flex items-center hover:scale-105 duration-200'
                                                 onClick={() => handelDownloadPdf(index)}
-                                                disabled={isDownloadExcell[index]}
+                                                disabled={isDownloadPdf[index]}
                                             >
-                                                <span className='text-center mr-2 text-2xl text-red-700'>
+                                                <span className='text-center mr-2 text-xl text-red-700'>
                                                     <FaRegFilePdf />
                                                 </span>
-                                                {isDownloadExcell[index] ? (<span className='text-sm'>صبر کنید</span>) : (<span>PDF</span>)}
+                                                {isDownloadPdf[index] ? (<span className='text-sm'>صبر کنید</span>) : (<span>PDF</span>)}
 
                                             </button>
                                             <button
                                                 className='border-dotted border-black rounded-md border-2 md:px-4 px-2 pt-1 pb-2 mx-2 sm:text-xl text-xs font-semibold text-center flex items-center hover:scale-105 duration-200'
                                                 onClick={() => handelDownloadWord(index)}
                                             >
-                                                <span className='text-center mr-2 text-2xl text-yellow-600'>
+                                                <span className='text-center mr-2 text-xl text-yellow-600'>
                                                     <FaDownload />
                                                 </span>
-                                                 Word
+                                                {isDownloadWord[index] ? (<span className='text-sm'>صبر کنید</span>) : (<span>WORD</span>)}
+
                                             </button>
                                         </div>
                                     </div>
